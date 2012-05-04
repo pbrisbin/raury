@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'raury'
+
+Raury::Main.run! ARGV
