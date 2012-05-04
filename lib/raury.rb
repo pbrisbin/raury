@@ -1,5 +1,5 @@
 require 'raury/exceptions'
-require 'raury/json'
+require 'raury/aur'
 require 'raury/result'
 require 'raury/rpc_call'
 require 'raury/search'

@@ -2,8 +2,8 @@ require 'raury'
 
 describe Raury::Info do
   it "should return search results" do
-    Raury::Json.any_instance.stub(:content =>
-      JSON.parse(File.read('./spec/json/search_result.json')))
+    Raury::Aur.any_instance.stub(:fetch =>
+      File.read('./spec/json/search_result.json'))
 
     results = Raury::Search.new('foo').call
 

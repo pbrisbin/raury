@@ -1,14 +1,13 @@
+require 'json'
+
 module Raury
   class RpcCall
-    AUR = 'aur.archlinux.org'
-
     def initialize(*args)
-      @query = "?type=#{type}#{to_query(*args)}"
+      @rpc = Aur.new("/rpc.php?type=#{type}#{to_query(*args)}")
     end
 
     def call
-      # TODO: make https work.
-      results = Json.new("http://#{AUR}/rpc.php#{@query}").content['results']
+      results = JSON.parse(@rpc.fetch)['results']
 
       [].tap do |arr|
         results.each do |result|
