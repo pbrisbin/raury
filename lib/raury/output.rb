@@ -22,6 +22,21 @@ module Raury
       end
     end
 
+    def quiet
+      sorted_results.each do |result|
+        puts result.name
+      end
+    end
+
+    def pkgbuild
+      sorted_results.each do |result|
+        aur = Aur.new(
+          File.join(File.dirname(result.pkg_url), 'PKGBUILD'))
+
+        puts aur.fetch, ''
+      end
+    end
+
     private
 
     def sorted_results
