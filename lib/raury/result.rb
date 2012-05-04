@@ -1,9 +1,21 @@
 module Raury
-  class SearchResult
+  # wrapper class over the hash values returned by aur's rpc calls.
+  # provides better accessor methods and type conversions where
+  # appropriate.
+  #
+  #     result = Result.new({"Name" => "foo", "OutOfDate" => "1"})
+  #
+  #     result.name
+  #     => "foo"
+  #
+  #     result.out_of_date
+  #     => true
+  #
+  class Result
     # define an instance method called +method+, which accesses the
     # internal json hash by +key+. if +conversion+ is not nil, it's
     # called on the value before returning it.
-    def self.def_accessor(method, key, conversion = nil) 
+    def self.def_accessor(method, key, conversion = nil)
       conversions[method] = conversion
 
       self.class_eval %{

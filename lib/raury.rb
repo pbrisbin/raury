@@ -1,6 +1,6 @@
 require 'raury/exceptions'
 require 'raury/json'
-require 'raury/search_result'
+require 'raury/result'
 require 'raury/rpc_call'
 require 'raury/search'
 require 'raury/info'

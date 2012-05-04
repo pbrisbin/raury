@@ -12,7 +12,7 @@ module Raury
 
       [].tap do |arr|
         results.each do |result|
-          arr << SearchResult.new(result)
+          arr << Result.new(result)
         end
       end
 

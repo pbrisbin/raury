@@ -1,8 +1,8 @@
 require 'raury'
 
-describe Raury::SearchResult do
+describe Raury::Result do
   context "instance" do
-    search_result = Raury::SearchResult.new(
+    search_result = Raury::Result.new(
       JSON.parse(
         '{ "Maintainer":"pbrisbin",
            "ID":"12",

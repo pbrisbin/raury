@@ -3,14 +3,14 @@ require 'spec_helper'
 
 describe Raury::Output do
   it "outputs sorted search results" do
-    results = [ Raury::SearchResult.new({ "Name"        => "beans",
-                                          "Version"     => "1.0",
-                                          "OutOfDate"   => "0",
-                                          "Description" => "beans description" }),
-                Raury::SearchResult.new({ "Name"        => "apple",
-                                          "Version"     => "2.0",
-                                          "OutOfDate"   => "1",
-                                          "Description" => "apple description" }) ]
+    results = [ Raury::Result.new({ "Name"        => "beans",
+                                    "Version"     => "1.0",
+                                    "OutOfDate"   => "0",
+                                    "Description" => "beans description" }),
+                Raury::Result.new({ "Name"        => "apple",
+                                    "Version"     => "2.0",
+                                    "OutOfDate"   => "1",
+                                    "Description" => "apple description" }) ]
 
     s = capture_stdout { Raury::Output.new(results).search }
 
@@ -23,16 +23,16 @@ aur/beans 1.0
   end
 
   it "outputs sorted info results" do
-    results = [ Raury::SearchResult.new({ "Name"        => "beans",
-                                          "Version"     => "1.0",
-                                          "URL"         => "http://example.com/beans",
-                                          "OutOfDate"   => "0",
-                                          "Description" => "beans description" }),
-                Raury::SearchResult.new({ "Name"        => "apple",
-                                          "Version"     => "2.0",
-                                          "URL"         => "http://example.com/apple",
-                                          "OutOfDate"   => "1",
-                                          "Description" => "apple description" }) ]
+    results = [ Raury::Result.new({ "Name"        => "beans",
+                                    "Version"     => "1.0",
+                                    "URL"         => "http://example.com/beans",
+                                    "OutOfDate"   => "0",
+                                    "Description" => "beans description" }),
+                Raury::Result.new({ "Name"        => "apple",
+                                    "Version"     => "2.0",
+                                    "URL"         => "http://example.com/apple",
+                                    "OutOfDate"   => "1",
+                                    "Description" => "apple description" }) ]
 
     s = capture_stdout { Raury::Output.new(results).info }
 
