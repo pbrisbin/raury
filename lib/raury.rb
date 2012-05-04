@@ -2,7 +2,7 @@ require 'raury/exceptions'
 require 'raury/logger'
 require 'raury/json'
 require 'raury/search_result'
+require 'raury/rpc_call'
+require 'raury/search'
 
-module Raury
-
-end
+#puts Raury::Search.new('aur helper').call!

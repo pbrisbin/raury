@@ -10,4 +10,8 @@ module Raury
   class NoResults < StandardError
 
   end
+
+  class SubClassNotImplemented < StandardError
+
+  end
 end
