@@ -1,6 +1,6 @@
 require 'raury'
 
-describe Raury::Search do
+describe Raury::Info do
   it "should return search results" do
     Raury::Json.any_instance.stub(:content =>
       JSON.parse(File.read('./spec/json/search_result.json')))
