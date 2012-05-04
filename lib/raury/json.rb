@@ -17,7 +17,7 @@ module Raury
       @json
 
     rescue Exception => ex
-      Logger.debug "Json#content: #{ex.full_message}"
+      Logger.debug "Json#content: #{ex}"
       raise NetworkException
     end
   end

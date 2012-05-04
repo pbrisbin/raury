@@ -19,7 +19,7 @@ module Raury
     rescue NetworkError => ex
       raise ex
     rescue Exception => ex
-      Logger.debug "RpcCall#call! #{ex.full_message}"
+      Logger.debug "RpcCall#call! #{ex}"
       raise NoResults
     end
 
