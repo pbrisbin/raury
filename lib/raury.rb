@@ -1,5 +1,4 @@
 require 'raury/exceptions'
-require 'raury/logger'
 require 'raury/json'
 require 'raury/search_result'
 require 'raury/rpc_call'
