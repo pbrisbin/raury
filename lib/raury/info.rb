@@ -1,7 +1,7 @@
 require 'cgi'
 
 module Raury
-  class Info < RpcCall
+  class Info < Rpc
     def type
       'multiinfo'
     end

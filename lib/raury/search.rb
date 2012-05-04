@@ -1,7 +1,7 @@
 require 'cgi'
 
 module Raury
-  class Search < RpcCall
+  class Search < Rpc
     def type
       'search'
     end
