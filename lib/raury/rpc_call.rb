@@ -6,7 +6,7 @@ module Raury
       @query = "?type=#{type}#{to_query(*args)}"
     end
 
-    def call!
+    def call
       # TODO: make https work.
       results = Json.new("http://#{AUR}/rpc.php#{@query}").content['results']
 

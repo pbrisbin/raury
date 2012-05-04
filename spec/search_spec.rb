@@ -5,7 +5,7 @@ describe Raury::Search do
     Raury::Json.any_instance.stub(:content =>
       JSON.parse(File.read('./spec/json/cower_search.json')))
 
-    results = Raury::Search.new('cower').call!
+    results = Raury::Search.new('cower').call
 
     results.length.should eq(1)
 
