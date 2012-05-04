@@ -11,6 +11,17 @@ module Raury
       end
     end
 
+    def info
+      sorted_results.each do |result|
+        puts "Repository      : aur",
+             "Name            : #{result.name}",
+             "Version         : #{result.version}",
+             "URL             : #{result.url}",
+             "Out of date     : #{result.out_of_date ? 'Yes' : 'No'}",
+             "Description     : #{result.description}", ''
+      end
+    end
+
     private
 
     def sorted_results

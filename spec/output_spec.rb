@@ -21,4 +21,36 @@ aur/beans 1.0
     beans description
     }.strip)
   end
+
+  it "outputs sorted info results" do
+    results = [ Raury::SearchResult.new({ "Name"        => "beans",
+                                          "Version"     => "1.0",
+                                          "URL"         => "http://example.com/beans",
+                                          "OutOfDate"   => "0",
+                                          "Description" => "beans description" }),
+                Raury::SearchResult.new({ "Name"        => "apple",
+                                          "Version"     => "2.0",
+                                          "URL"         => "http://example.com/apple",
+                                          "OutOfDate"   => "1",
+                                          "Description" => "apple description" }) ]
+
+    s = capture_stdout { Raury::Output.new(results).info }
+
+    s.chomp.should eq(%{
+Repository      : aur
+Name            : apple
+Version         : 2.0
+URL             : http://example.com/apple
+Out of date     : Yes
+Description     : apple description
+
+Repository      : aur
+Name            : beans
+Version         : 1.0
+URL             : http://example.com/beans
+Out of date     : No
+Description     : beans description
+    }.strip + "\n") # trailing newline
+
+  end
 end
