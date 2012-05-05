@@ -9,16 +9,19 @@ module Raury
     def call
       results = JSON.parse(@rpc.fetch)['results']
 
+      raise NoResults unless results.is_a?(Array) && results.any?
+
       [].tap do |arr|
         results.each do |result|
           arr << Result.new(result)
         end
       end
+    end
 
-    rescue NetworkError => ex
-      raise ex
-    rescue Exception
-      raise NoResults
+    def output(quiet = false)
+      output = Output.new(call)
+      method = quiet ? :quiet : output_method
+      output.send(method)
     end
 
     def type
@@ -26,6 +29,10 @@ module Raury
     end
 
     def to_query(args)
+      raise SubClassNotImplemented
+    end
+
+    def output_method
       raise SubClassNotImplemented
     end
   end
