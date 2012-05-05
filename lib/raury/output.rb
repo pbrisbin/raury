@@ -1,18 +1,18 @@
 module Raury
   class Output
-    def initialize(search_results)
-      @search_results = search_results
+    def initialize(results)
+      @results = results
     end
 
     def search
-      sorted_results.each do |result|
+      results.each do |result|
         puts "aur/#{result.name} #{result.version}#{result.out_of_date ? ' [out of date]' : ''}",
              "    #{result.description}"
       end
     end
 
     def info
-      sorted_results.each do |result|
+      results.each do |result|
         puts "Repository      : aur",
              "Name            : #{result.name}",
              "Version         : #{result.version}",
@@ -23,13 +23,13 @@ module Raury
     end
 
     def quiet
-      sorted_results.each do |result|
+      results.each do |result|
         puts result.name
       end
     end
 
     def pkgbuild
-      sorted_results.each do |result|
+      results.each do |result|
         aur = Aur.new(
           File.join(File.dirname(result.pkg_url), 'PKGBUILD'))
 
@@ -39,11 +39,11 @@ module Raury
 
     private
 
-    def sorted_results
-      if @search_results.length > 1
-        @search_results.sort_by(&:name)
+    def results
+      if @results.length > 1
+        @results.sort_by(&:name)
       else
-        @search_results
+        @results
       end
     end
   end
