@@ -5,12 +5,16 @@ require 'raury/rpc'
 require 'raury/search'
 require 'raury/info'
 require 'raury/output'
+require 'raury/download'
+require 'raury/build'
 
 require 'optparse'
 
 module Raury
+  # Raury::Main.run! ARGV
   class Main
     class << self
+
       def run!(argv)
         options, arguments = parse_options(argv)
 
@@ -45,6 +49,8 @@ module Raury
 
       private
 
+      # OptionParser wrapper. returns hash of options and remaining
+      # arguments.
       def parse_options(argv)
         options = {}
 
@@ -67,6 +73,7 @@ module Raury
       rescue OptionParser::InvalidOption
         raise InvalidUsage
       end
+
     end
   end
 end

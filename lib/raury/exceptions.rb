@@ -14,4 +14,12 @@ module Raury
   class SubClassNotImplemented < StandardError
 
   end
+
+  class NoPkgbuild < StandardError
+
+  end
+
+  class BuildError < StandardError
+
+  end
 end
