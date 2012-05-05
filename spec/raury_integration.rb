@@ -9,14 +9,14 @@ describe Raury do
   it "prints short search results" do
     stdout = capture_stdout { Raury::Main.run! ['-s', 'aur', 'helper'] }
 
-    stdout.chomp.should eql(%{
+    stdout.chomp.should eq(%{
 aur/aur77i-git 20120410-1
     another tiny incompatible aur helper for the masses
 aur/mate-file-manager-makepkg 2.30.0-1 [out of date]
     An AUR helper for the MATE file manager context menu
 aur/nautilus2-makepkg 2.30.0-2
     An AUR helper for the nautilus context menu
-aur/pkgbuilder 2.1.2.19-1
+aur/pkgbuilder 2.1.2.20-1
     A basic Python AUR helper/library.
 aur/powaur 0.1.6-1
     An AUR helper with a pacman-like interface
