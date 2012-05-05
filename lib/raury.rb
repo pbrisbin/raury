@@ -10,93 +10,63 @@ require 'optparse'
 
 module Raury
   class Main
+    class << self
+      def run!(argv)
+        options, arguments = parse_options(argv)
 
-    def self.run!(argv)
-      main = new(argv)
+        if search_method = options[:search]
+          quiet = options[:quiet]
 
-      if search = main.options[:search]
-        quiet = main.options[:quiet]
+          case search_method
+          when :search then Search.new(arguments).output(quiet)
+          when :info   then Info.new(arguments).output(quiet)
+          when :pkgbuild
+            output = Output.new(Info.new(arguments).call)
+            quiet ? output.quiet : output.pkgbuild
+          else
+            raise InvalidUsage
+          end
 
-        case search
-        when :search
-          results = Search.new(*main.arguments).call
-          output  = Output.new(results)
-          output.search unless quiet
-        when :info
-          results = Info.new(*main.arguments).call
-          output  = Output.new(results)
-          output.info unless quiet
-        when :pkgbuild
-          results = Info.new(*main.arguments).call
-          output  = Output.new(results)
-          output.pkgbuild unless quiet
         else
-          raise InvalidUsage
+          # TODO: installation commands
         end
 
-        output.quiet if quiet
+      rescue => ex
+        msg = case ex
+              when InvalidUsage then 'invalid usage. try -h or --help'
+              when NoResults    then 'no results found.'
+              when NetworkError then 'there was a network error talking to the AUR'
+              else "unhandled exception: #{ex}"
+              end
 
-      else
-        # TODO: installation commands
+        $stderr.puts "error: #{msg}"
+        exit 1
       end
 
-    rescue InvalidUsage
-      $stderr.puts 'invalid usage. try -h or --help'
-      exit 1
+      private
 
-    rescue NoResults
-      $stderr.puts 'no results found.'
-      exit 1
+      def parse_options(argv)
+        options = {}
 
-    rescue NetworkError
-      $stderr.puts 'there was a network error talking to the AUR'
-      exit 1
+        OptionParser.new do |opts|
+          opts.banner = 'usage: raury [options] [arguments] ...'
+
+          opts.on('-h', '--help', 'Display this screen') do
+            puts opts
+            exit
+          end
+
+          opts.on('-s', '--search', 'Search for packages')         { options[:search] = :search   }
+          opts.on('-i', '--info',   'Show info for packages')      { options[:search] = :info     }
+          opts.on('-p', '--print',  'Show PKGBUILDs for packages') { options[:search] = :pkgbuild }
+          opts.on('-q', '--quiet',  'Print only package names')    { options[:quiet]  = true      }
+        end.parse!(argv)
+
+        [options, argv]
+
+      rescue OptionParser::InvalidOption
+        raise InvalidUsage
+      end
     end
-
-    attr_reader :options, :arguments
-
-    def initialize(argv)
-      @options = {}
-
-      OptionParser.new do |opts|
-        opts.banner = 'usage: raury [options] [arguments] ...'
-
-        opts.on('-h', '--help', 'Display this screen') do
-          puts opts
-          exit
-        end
-
-        opts.on('-s', '--search', 'Search for packages') do
-          @options[:search] = :search
-        end
-
-        opts.on('-i', '--info', 'Show extended info on packages') do
-          @options[:search] = :info
-        end
-
-        opts.on('-p', '--print', 'Print PKGBUILDs for packages') do
-          @options[:search] = :pkgbuild
-        end
-
-        opts.on('-q', '--quiet', 'Show only names in output') do
-          @options[:quiet] = true
-        end
-      end.parse!(argv)
-
-      @arguments = argv
-
-    rescue OptionParser::InvalidOption
-      raise InvalidUsage
-    end
-
-    private_class_method :new
-
   end
 end
-
-#Raury::Main.run! ['-s', 'aur', 'helper']
-#Raury::Main.run! ['-i', 'aurget', 'cower']
-#Raury::Main.run! ['-p', 'aurget', 'cower']
-#Raury::Main.run! ['-s', '-q', 'aur', 'helper']
-#Raury::Main.run! ['-p', '-q', 'aurget', 'cower']
-#Raury::Main.run! ['-i', '-q', 'aurget', 'cower']
