@@ -6,8 +6,8 @@ module Raury
       'multiinfo'
     end
 
-    def to_query(*args)
-      args.map { |arg| "&arg[]=#{CGI::escape(arg)}" }.join
+    def to_query(pkgs)
+      pkgs.map { |pkg| "&arg[]=#{CGI::escape(pkg)}" }.join
     end
   end
 end

@@ -2,8 +2,8 @@ require 'json'
 
 module Raury
   class Rpc
-    def initialize(*args)
-      @rpc = Aur.new("/rpc.php?type=#{type}#{to_query(*args)}")
+    def initialize(args)
+      @rpc = Aur.new("/rpc.php?type=#{type}#{to_query(args)}")
     end
 
     def call

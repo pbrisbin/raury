@@ -5,7 +5,7 @@ describe Raury::Info do
     Raury::Aur.any_instance.stub(:fetch =>
       File.read('./spec/json/search_result.json'))
 
-    results = Raury::Search.new('foo').call
+    results = Raury::Info.new(['pkg2', 'pkg2']).call
 
     results.length.should eq(1)
 

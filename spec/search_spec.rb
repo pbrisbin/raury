@@ -5,7 +5,7 @@ describe Raury::Search do
     Raury::Aur.any_instance.stub(:fetch =>
       File.read('./spec/json/search_result.json'))
 
-    results = Raury::Search.new('foo').call
+    results = Raury::Search.new(['aur', 'helper']).call
 
     results.length.should eq(1)
 

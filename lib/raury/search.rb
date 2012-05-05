@@ -6,8 +6,8 @@ module Raury
       'search'
     end
 
-    def to_query(*args)
-      "&arg=#{CGI::escape(args.join(' '))}"
+    def to_query(search_terms)
+      "&arg=#{CGI::escape(search_terms.join(' '))}"
     end
   end
 end
