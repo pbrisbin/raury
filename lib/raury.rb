@@ -59,7 +59,7 @@ module Raury
       @options = {}
 
       OptionParser.new do |opts|
-        opts.banner = 'usage: rarury [options] [arguments] ...'
+        opts.banner = 'usage: raury [options] [arguments] ...'
 
         opts.on('-h', '--help', 'Display this screen') do
           puts opts
