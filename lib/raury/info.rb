@@ -1,6 +1,7 @@
 require 'cgi'
 
 module Raury
+  # An info rpc call: Info.new(['pkg1', 'pkg2'])
   class Info < Rpc
     def type
       'multiinfo'

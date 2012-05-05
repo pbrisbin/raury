@@ -1,9 +1,12 @@
 module Raury
+  # Utility class used when results need to be printed. Centralizes
+  # formatting and will eventually handle colourization.
   class Output
     def initialize(results)
       @results = results
     end
 
+    # output to match pacman -Ss
     def search
       results.each do |result|
         puts "aur/#{result.name} #{result.version}#{result.out_of_date ? ' [out of date]' : ''}",
@@ -11,6 +14,7 @@ module Raury
       end
     end
 
+    # output to match pacman -Si
     def info
       results.each do |result|
         puts "Repository      : aur",
@@ -22,12 +26,14 @@ module Raury
       end
     end
 
+    # output to match pacman -Ssq
     def quiet
       results.each do |result|
         puts result.name
       end
     end
 
+    # print pkgbuilds for results on stdout
     def pkgbuild
       results.each do |result|
         aur = Aur.new(

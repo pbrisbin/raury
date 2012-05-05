@@ -2,7 +2,7 @@ require 'uri'
 require 'net/http'
 
 module Raury
-  # represents a resource available on the AUR, pkgbuilds, taurballs,
+  # represents a resource available on the AUR: pkgbuilds, taurballs,
   # and rpc call results are all fetched via this class.
   class Aur
     AUR = 'aur.archlinux.org'

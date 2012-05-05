@@ -1,6 +1,7 @@
 require 'cgi'
 
 module Raury
+  # A search rpc call: Search.new(['aur', 'helper'])
   class Search < Rpc
     def type
       'search'
