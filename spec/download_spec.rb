@@ -4,7 +4,7 @@ describe Raury::Download do
   it "should download a taurball" do
     result = double("result", :pkg_url => '/a/url.tar.gz')
 
-    Raury::Info.any_instance.stub(:call).and_return([result])
+    Raury::Rpc.any_instance.stub(:call).and_return(result)
     Raury::Aur.any_instance.stub(:fetch).and_return('some data')
 
     fh = double("fh")
@@ -18,7 +18,7 @@ describe Raury::Download do
   it "should extract directly" do
     result = double("result", :pkg_url => '/a/url')
 
-    Raury::Info.any_instance.stub(:call).and_return([result])
+    Raury::Rpc.any_instance.stub(:call).and_return(result)
     Raury::Aur.any_instance.stub(:fetch).and_return('some data')
 
     h = double("h")

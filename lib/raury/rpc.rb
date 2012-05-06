@@ -1,49 +1,45 @@
+require 'cgi'
 require 'json'
 
 module Raury
-  # a layer over Aur to represent a specific rpc resource. this should
-  # be subclassed and the noted methods implemented.
+  # Wrapper over Aur which calls the rpc resource. 
   class Rpc
-    def initialize(args)
-      @rpc = Aur.new("/rpc.php?type=#{type}#{to_query(args)}")
+    def initialize(type, *args)
+      args_str = case type
+                 when :search    then to_arg(args.join(' '))
+                 when :info      then to_arg(args.first)
+                 when :multiinfo then to_args(args)
+                 else raise InvalidUsage
+                 end
+
+      @rpc = Aur.new("/rpc.php?type=#{type}#{args_str}")
     end
 
-    # fetch the rpc resource and return a list of Result
     def call
-      results = JSON.parse(@rpc.fetch)['results']
+      json = JSON.parse(@rpc.fetch)
+      type = json['type']
 
-      raise NoResults unless results.is_a?(Array) && results.any?
+      if type == 'info'
+        return Result.new(json['results'])
+      end
 
-      [].tap do |arr|
-        results.each do |result|
-          arr << Result.new(result)
+      if ['search','multiinfo'].include?(type)
+        return [].tap do |arr|
+          json['results'].each do |result|
+            arr << Result.new(result)
+          end
         end
       end
+
+      raise NoResults
     end
 
-    # fetch the rpc resource, passing the list of Result to an Output
-    # and call the output_method on it. if +quiet+ is true, run the
-    # quiet method on the output instead.
-    def output(quiet = false)
-      output = Output.new(call)
-      method = quiet ? :quiet : output_method
-      output.send(method)
+    def to_arg(arg)
+      "&arg=#{CGI::escape(arg)}"
     end
 
-    # the type query param. examples: 'search', 'info', 'multiinfo'
-    def type
-      raise SubClassNotImplemented
-    end
-
-    # format an array of arguments into the argument query param(s).
-    # examples: "&arg=foo", "&arg[]=foo+bar&arg[]=baz"
-    def to_query(args)
-      raise SubClassNotImplemented
-    end
-
-    # the output method to use. examples: :search, :info
-    def output_method
-      raise SubClassNotImplemented
+    def to_args(args)
+      args.map { |arg| "&arg[]=#{CGI::escape(arg)}" }.join
     end
   end
 end
