@@ -2,9 +2,6 @@ require 'raury/exceptions'
 require 'raury/aur'
 require 'raury/result'
 require 'raury/rpc'
-require 'raury/search'
-require 'raury/info'
-require 'raury/output'
 require 'raury/download'
 require 'raury/build'
 
@@ -19,18 +16,10 @@ module Raury
         options, arguments = parse_options(argv)
 
         if search_method = options[:search]
-          quiet = options[:quiet]
+          results = Rpc.new(search_method, *arguments).call
 
-          case search_method
-          when :search then Search.new(arguments).output(quiet)
-          when :info   then Info.new(arguments).output(quiet)
-          when :pkgbuild
-            output = Output.new(Info.new(arguments).call)
-            quiet ? output.quiet : output.pkgbuild
-          else
-            raise InvalidUsage
-          end
-
+          options[:quiet] ? puts(*results.map(&:name))
+                          :       results.map(&:display)
         else
           # TODO: installation commands
         end
@@ -62,10 +51,9 @@ module Raury
             exit
           end
 
-          opts.on('-s', '--search', 'Search for packages')         { options[:search] = :search   }
-          opts.on('-i', '--info',   'Show info for packages')      { options[:search] = :info     }
-          opts.on('-p', '--print',  'Show PKGBUILDs for packages') { options[:search] = :pkgbuild }
-          opts.on('-q', '--quiet',  'Print only package names')    { options[:quiet]  = true      }
+          opts.on('-s', '--search', 'Search for packages')         { options[:search] = :search    }
+          opts.on('-i', '--info',   'Show info for packages')      { options[:search] = :multiinfo }
+          opts.on('-q', '--quiet',  'Print only package names')    { options[:quiet]  = true       }
         end.parse!(argv)
 
         [options, argv]
