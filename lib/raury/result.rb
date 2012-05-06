@@ -50,5 +50,13 @@ module Raury
     def initialize(hsh)
       @hsh = hsh
     end
+
+    def ==(other)
+      name == other.name
+    end
+
+    def <=>(other)
+      name <=> other.name
+    end
   end
 end

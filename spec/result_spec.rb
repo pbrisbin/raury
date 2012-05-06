@@ -38,5 +38,23 @@ describe Raury::Result do
       search_result.submitted.should eq(Time.at(1293676237))
       search_result.modified.should eq(Time.at(1334506297))
     end
+
+    it "can be compared" do
+      search_result_a = Raury::Result.new(
+        JSON.parse('{ "Name": "apple" }'))
+
+      search_result_b = Raury::Result.new(
+        JSON.parse('{ "Name": "apple" }'))
+
+      search_result_c = Raury::Result.new(
+        JSON.parse('{ "Name": "bean" }'))
+
+      # same name, should eq
+      search_result_a.should eq(search_result_b)
+
+      # should sort by name
+      [search_result_c, search_result_a].sort.should eq(
+        [search_result_a, search_result_c])
+    end
   end
 end
