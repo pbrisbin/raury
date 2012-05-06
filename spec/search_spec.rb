@@ -15,13 +15,4 @@ describe Raury::Search do
     result.description.should eq('A description')
     result.pkg_url.should eq('/packages/fo/foo/foo.tar.gz')
   end
-
-  it "should call its output type" do
-    Raury::Aur.any_instance.stub(:fetch =>
-      File.read('./spec/json/search_result.json'))
-
-    Raury::Output.any_instance.should_receive(:search)
-
-    Raury::Search.new(['aur', 'helper']).output
-  end
 end

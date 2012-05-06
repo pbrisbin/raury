@@ -3,13 +3,13 @@ module Raury
   # provides better accessor methods and type conversions where
   # appropriate.
   #
-  #     result = Result.new({"Name" => "foo", "OutOfDate" => "1"})
+  #   result = Result.new({"Name" => "foo", "OutOfDate" => "1"})
   #
-  #     result.name
-  #     => "foo"
+  #   result.name
+  #   => "foo"
   #
-  #     result.out_of_date
-  #     => true
+  #   result.out_of_date
+  #   => true
   #
   class Result
     # define an instance method called +method+, which accesses the
@@ -57,6 +57,27 @@ module Raury
 
     def <=>(other)
       name <=> other.name
+    end
+
+    def display
+      puts "aur/#{name} #{version}#{out_of_date ? ' [out of date]' : ''}",
+           "    #{description}"
+    end
+
+    def display_info
+      puts "Repository      : aur",
+           "Name            : #{name}",
+           "Version         : #{version}",
+           "URL             : #{url}",
+           "Out of date     : #{out_of_date ? 'Yes' : 'No'}",
+           "Description     : #{description}", ''
+    end
+
+    def display_pkgbuild
+      aur = Aur.new(
+        File.join(File.dirname(pkg_url), 'PKGBUILD'))
+
+      puts aur.fetch, ''
     end
   end
 end
