@@ -42,6 +42,7 @@ describe Raury::Rpc, '#call' do
     result = results.first
 
     result.should be_kind_of(Raury::Result)
+    result.type.should eq(:search)
     result.name.should eq('foo')
   end
 
@@ -54,6 +55,7 @@ describe Raury::Rpc, '#call' do
     result = rpc.call
 
     result.should be_kind_of(Raury::Result)
+    result.type.should eq(:info)
     result.name.should eq('foo')
   end
 end

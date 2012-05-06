@@ -20,13 +20,13 @@ module Raury
       type = json['type']
 
       if type == 'info'
-        return Result.new(json['results'])
+        return Result.new(:info, json['results'])
       end
 
       if ['search','multiinfo'].include?(type)
         return [].tap do |arr|
           json['results'].each do |result|
-            arr << Result.new(result)
+            arr << Result.new(type.to_sym, result)
           end
         end
       end

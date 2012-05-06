@@ -1,8 +1,10 @@
 require 'raury'
+require 'spec_helper'
 
 describe Raury::Result do
   context "instance" do
     search_result = Raury::Result.new(
+      :search,
       JSON.parse(
         '{ "Maintainer":"pbrisbin",
            "ID":"12",
@@ -40,13 +42,13 @@ describe Raury::Result do
     end
 
     it "can be compared" do
-      search_result_a = Raury::Result.new(
+      search_result_a = Raury::Result.new(:search,
         JSON.parse('{ "Name": "apple" }'))
 
-      search_result_b = Raury::Result.new(
+      search_result_b = Raury::Result.new(:search,
         JSON.parse('{ "Name": "apple" }'))
 
-      search_result_c = Raury::Result.new(
+      search_result_c = Raury::Result.new(:search,
         JSON.parse('{ "Name": "bean" }'))
 
       # same name, should eq
@@ -55,6 +57,13 @@ describe Raury::Result do
       # should sort by name
       [search_result_c, search_result_a].sort.should eq(
         [search_result_a, search_result_c])
+    end
+
+    it "displays correctly" do
+      capture_stdout { search_result.display }.chomp.should eq(%{
+aur/foo 2.2-1
+    A description
+      }.strip)
     end
   end
 end

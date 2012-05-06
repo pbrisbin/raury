@@ -3,7 +3,7 @@ module Raury
   # provides better accessor methods and type conversions where
   # appropriate.
   #
-  #   result = Result.new({"Name" => "foo", "OutOfDate" => "1"})
+  #   result = Result.new(:info, {"Name" => "foo", "OutOfDate" => "1"})
   #
   #   result.name
   #   => "foo"
@@ -47,8 +47,10 @@ module Raury
     def_accessor :submitted  , "FirstSubmitted", lambda {|s| Time.at(s.to_i) }
     def_accessor :modified   , "LastModified"  , lambda {|s| Time.at(s.to_i) }
 
-    def initialize(hsh)
-      @hsh = hsh
+    attr_accessor :type
+
+    def initialize(type, hsh)
+      @type, @hsh = type, hsh
     end
 
     def ==(other)
@@ -60,24 +62,17 @@ module Raury
     end
 
     def display
-      puts "aur/#{name} #{version}#{out_of_date ? ' [out of date]' : ''}",
-           "    #{description}"
-    end
-
-    def display_info
-      puts "Repository      : aur",
-           "Name            : #{name}",
-           "Version         : #{version}",
-           "URL             : #{url}",
-           "Out of date     : #{out_of_date ? 'Yes' : 'No'}",
-           "Description     : #{description}", ''
-    end
-
-    def display_pkgbuild
-      aur = Aur.new(
-        File.join(File.dirname(pkg_url), 'PKGBUILD'))
-
-      puts aur.fetch, ''
+      if type == :search
+        puts "aur/#{name} #{version}#{out_of_date ? ' [out of date]' : ''}",
+             "    #{description}"
+      else
+        puts "Repository      : aur",
+             "Name            : #{name}",
+             "Version         : #{version}",
+             "URL             : #{url}",
+             "Out of date     : #{out_of_date ? 'Yes' : 'No'}",
+             "Description     : #{description}", ''
+      end
     end
   end
 end
