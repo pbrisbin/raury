@@ -1,5 +1,9 @@
 module Raury
   class BuildPlan
+    def initialize(targets = [])
+      @targets = targets
+    end
+
     def add_target(target)
       unless targets.include?(target)
         targets << target
