@@ -4,6 +4,8 @@ require 'raury/result'
 require 'raury/rpc'
 require 'raury/download'
 require 'raury/build'
+require 'raury/build_plan'
+require 'raury/depends'
 
 require 'optparse'
 
