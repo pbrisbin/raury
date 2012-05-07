@@ -31,7 +31,7 @@ printf "%s\\n" "${makedepends[@]}"#{build_only ? '' : ' "${depends[@]}"'}
         h.read.split("\n")
       end
 
-      `pacman -T -- #{quote deps}`.split("\n").map(:sub, /(==?|>=|<=).*$/, '')
+      `pacman -T -- #{quote deps}`.split("\n").map {|d| d.sub(/(==?|>=|<=).*$/, '') }
     end
 
     private
