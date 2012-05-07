@@ -1,7 +1,7 @@
 module Raury
   class Download
-    def initialize(package)
-      @pkg_url = Rpc.new(:info, package).call.pkg_url
+    def initialize(result)
+      @pkg_url = result.pkg_url
       @aur     = Aur.new(@pkg_url)
     end
 

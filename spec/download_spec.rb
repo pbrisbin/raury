@@ -2,9 +2,6 @@ require 'raury'
 
 describe Raury::Download do
   it "should download a taurball" do
-    result = double("result", :pkg_url => '/a/url.tar.gz')
-
-    Raury::Rpc.any_instance.stub(:call).and_return(result)
     Raury::Aur.any_instance.stub(:fetch).and_return('some data')
 
     fh = double("fh")
@@ -12,13 +9,11 @@ describe Raury::Download do
 
     File.should_receive(:open).with('url.tar.gz', 'w').and_yield(fh)
 
-    Raury::Download.new('foo').download
+    result = double("result", :pkg_url => '/a/url.tar.gz')
+    Raury::Download.new(result).download
   end
 
   it "should extract directly" do
-    result = double("result", :pkg_url => '/a/url')
-
-    Raury::Rpc.any_instance.stub(:call).and_return(result)
     Raury::Aur.any_instance.stub(:fetch).and_return('some data')
 
     h = double("h")
@@ -27,6 +22,7 @@ describe Raury::Download do
 
     IO.should_receive(:popen).with('tar fxz -', 'w').and_yield(h)
 
-    Raury::Download.new('foo').extract
+    result = double("result", :pkg_url => '/a/url')
+    Raury::Download.new(result).extract
   end
 end
