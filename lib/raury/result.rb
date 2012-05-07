@@ -74,5 +74,9 @@ module Raury
              "Description     : #{description}", ''
       end
     end
+
+    def to_s
+      "#{name} #{version}"
+    end
   end
 end
