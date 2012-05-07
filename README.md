@@ -3,7 +3,7 @@
 Every time I look at [aurget][], I want to refactor. Every time I start 
 to refactor aurget, I stop because it's in bash.
 
-[]: https://github.com/pbrisbin/aurget "Aurget project page"
+[aurget]: https://github.com/pbrisbin/aurget "Aurget project page"
 
 This is my second attempt at the Aur Helper Pattern in ruby. The goals 
 are as follows:
