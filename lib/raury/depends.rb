@@ -24,26 +24,20 @@ module Raury
       deps = IO.popen('bash', 'r+') do |h|
         h.write(%{
 #{pkgbuild}
-printf "%s\\n" "${makedepends[@]}" #{build_only ? '' : ' ${depends[@]}'}
+printf "%s\\n" "${makedepends[@]}"#{build_only ? '' : ' "${depends[@]}"'}
         })
 
         h.close_write
         h.read.split("\n")
       end
 
-      `pacman -T -- #{quote deps}`.split("\n").map { |d| strip_version(d) }
+      `pacman -T -- #{quote deps}`.split("\n").map(:sub, /(==?|>=|<=).*$/, '')
     end
 
     private
 
     def self.quote(args)
-      return '' if args.empty?
-
       args.map { |arg| "'#{arg}'" }.join(' ')
-    end
-
-    def self.strip_version(dep)
-      dep.sub(/(==?|>=|<=).*$/, '')
     end
   end
 end
