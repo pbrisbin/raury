@@ -22,8 +22,34 @@ module Raury
 
           options[:quiet] ? puts(*results.map(&:name))
                           :       results.map(&:display)
-        else
-          # TODO: installation commands
+
+        elsif options[:sync]
+          plan = build_plan(arguments, options)
+
+          # TODO: continue [Y/n]?
+
+          results = Rpc.new(:multiinfo, *plan.targets.reverse).call
+
+          # download/extract all targets
+          results.each do |result|
+            if options[:level] == :download
+              Download.new(result).download
+            else
+              Download.new(result).extract
+            end
+          end
+
+          return if [:download, :extract].include?(options[:level])
+
+          results.each do |result|
+            if options[:level] == :build
+              Build.new(result.name).build(['-s'])
+            else
+              Build.new(result.name).build(['-s', '-i'])
+            end
+          end
+
+        else raise InvalidUsage
         end
 
       rescue => ex
@@ -35,6 +61,7 @@ module Raury
               end
 
         $stderr.puts "error: #{msg}"
+        $stderr.puts "#{ex.backtrace.join("\n")}"
         exit 1
       end
 
@@ -53,15 +80,39 @@ module Raury
             exit
           end
 
-          opts.on('-s', '--search', 'Search for packages')         { options[:search] = :search    }
-          opts.on('-i', '--info',   'Show info for packages')      { options[:search] = :multiinfo }
-          opts.on('-q', '--quiet',  'Print only package names')    { options[:quiet]  = true       }
+          # installations
+          opts.on('-S', '--sync',     'Install packages')       { options[:sync]   = true      }
+          opts.on('-d', '--download', 'Stop after downloading') { options[:level]  = :download }
+          opts.on('-e', '--extract',  'Stop after extracting')  { options[:level]  = :extract  }
+          opts.on('-b', '--build',    'Stop after building')    { options[:level]  = :build    }
+
+          # searching
+          opts.on('-s', '--search', 'Search for packages')      { options[:search] = :search    }
+          opts.on('-i', '--info',   'Show info for packages')   { options[:search] = :multiinfo }
+          opts.on('-q', '--quiet',  'Print only package names') { options[:quiet]  = true       }
+
+          # configuration
+          # TODO:
+
         end.parse!(argv)
 
         [options, argv]
 
       rescue OptionParser::InvalidOption
         raise InvalidUsage
+      end
+
+      def build_plan(targets, options)
+        if [:download, :extract].include?(options[:level])
+          return BuildPlan.new(targets)
+        end
+
+        puts "resolving dependencies..."
+        BuildPlan.new.tap do |plan|
+          targets.each do |target|
+            Depends.resolve(target, plan, options[:level] == :build)
+          end
+        end
       end
 
     end
