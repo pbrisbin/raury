@@ -24,10 +24,8 @@ module Raury
       end
 
       if ['search','multiinfo'].include?(type)
-        return [].tap do |arr|
-          json['results'].each do |result|
-            arr << Result.new(type.to_sym, result)
-          end
+        return json['results'].map do |result|
+          Result.new(type.to_sym, result)
         end
       end
 
