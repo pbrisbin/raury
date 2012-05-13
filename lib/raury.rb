@@ -7,11 +7,12 @@ require 'raury/download'
 require 'raury/build'
 require 'raury/build_plan'
 require 'raury/depends'
+require 'raury/vercmp'
+require 'raury/upgrades'
 
 require 'optparse'
 
 module Raury
-  # Raury::Main.run! ARGV
   class Main
     class << self
 
@@ -27,9 +28,13 @@ module Raury
 
         elsif options[:sync]
 
-          plan = BuildPlan.new(options[:level], arguments)
-          plan.resolve_dependencies! if options[:resolve]
-          plan.run! if plan.continue?
+          if options[:upgrade]
+            Upgrades.process(options[:level])
+          else
+            plan = BuildPlan.new(options[:level], arguments)
+            plan.resolve_dependencies! if options[:resolve]
+            plan.run! if plan.continue?
+          end
 
         else raise InvalidUsage
         end
@@ -37,6 +42,7 @@ module Raury
       rescue => ex
         msg = case ex
               when InvalidUsage then 'invalid usage. try -h or --help'
+              when NoTargets    then 'no targets specified (use -h for help)'
               when NoResults    then 'no results found.'
               when NetworkError then 'there was a network error talking to the AUR'
               else "unhandled exception: #{ex}"
@@ -63,10 +69,11 @@ module Raury
           end
 
           # installations
-          opts.on('-S', '--sync',     'Install packages')       { options[:sync]   = true      }
-          opts.on('-d', '--download', 'Stop after downloading') { options[:level]  = :download }
-          opts.on('-e', '--extract',  'Stop after extracting')  { options[:level]  = :extract  }
-          opts.on('-b', '--build',    'Stop after building')    { options[:level]  = :build    }
+          opts.on('-S', '--sync',     'Install packages')       { options[:sync]    = true      }
+          opts.on('-u', '--upgrade',  'Upgrade packages')       { options[:upgrade] = true      }
+          opts.on('-d', '--download', 'Stop after downloading') { options[:level]   = :download }
+          opts.on('-e', '--extract',  'Stop after extracting')  { options[:level]   = :extract  }
+          opts.on('-b', '--build',    'Stop after building')    { options[:level]   = :build    }
 
           # searching
           opts.on('-s', '--search', 'Search for packages')      { options[:search] = :search }
@@ -90,5 +97,3 @@ module Raury
     end
   end
 end
-
-#Raury::Main.run! ['-Ss', 'aurget']
