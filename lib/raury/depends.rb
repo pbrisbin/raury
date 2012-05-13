@@ -2,15 +2,15 @@ require 'cgi'
 
 module Raury
   class Depends
-    def self.resolve(name, bp, build_only = false)
-      deps = depends(name, build_only)
+    def self.resolve(name, bp)
+      deps = depends(name, bp.level == :build)
       deps ? bp.add_target(name) : bp.add_incidental(name)
 
       return if !deps || deps.empty?
 
       [].tap do |ts|
         (deps - bp.all).each do |dep|
-          ts << Thread.new { resolve(dep, bp, build_only) }
+          ts << Thread.new { resolve(dep, bp) }
         end
       end.map(&:join)
     end
@@ -20,6 +20,8 @@ module Raury
       pkgbuild = Aur.new("/packages/#{pkg.slice(0,2)}/#{pkg}/PKGBUILD").fetch
 
       return nil if pkgbuild =~ /not found/i
+
+      # TODO: display pkgbuild, prompt: continue?
 
       deps = IO.popen('bash', 'r+') do |h|
         h.write(%{
