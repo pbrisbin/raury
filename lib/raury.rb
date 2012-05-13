@@ -2,6 +2,7 @@ require 'raury/exceptions'
 require 'raury/aur'
 require 'raury/result'
 require 'raury/rpc'
+require 'raury/search'
 require 'raury/download'
 require 'raury/build'
 require 'raury/build_plan'
@@ -17,37 +18,18 @@ module Raury
       def run!(argv)
         options, arguments = parse_options(argv)
 
-        if search_method = options[:search]
-          results = Rpc.new(search_method, *arguments).call
+        Dir.chdir(options[:build_dir])
 
-          options[:quiet] ? puts(*results.map(&:name))
-                          :       results.map(&:display)
+        if method = options[:search]
+
+          search = Search.new(*arguments)
+          search.send(method)
 
         elsif options[:sync]
-          plan = build_plan(arguments, options)
 
-          # TODO: continue [Y/n]?
-
-          results = Rpc.new(:multiinfo, *plan.targets.reverse).call
-
-          # download/extract all targets
-          results.each do |result|
-            if options[:level] == :download
-              Download.new(result).download
-            else
-              Download.new(result).extract
-            end
-          end
-
-          return if [:download, :extract].include?(options[:level])
-
-          results.each do |result|
-            if options[:level] == :build
-              Build.new(result.name).build(['-s'])
-            else
-              Build.new(result.name).build(['-s', '-i'])
-            end
-          end
+          plan = BuildPlan.new(options[:level], arguments)
+          plan.resolve_dependencies! if options[:resolve]
+          plan.run! if plan.continue?
 
         else raise InvalidUsage
         end
@@ -87,12 +69,15 @@ module Raury
           opts.on('-b', '--build',    'Stop after building')    { options[:level]  = :build    }
 
           # searching
-          opts.on('-s', '--search', 'Search for packages')      { options[:search] = :search    }
-          opts.on('-i', '--info',   'Show info for packages')   { options[:search] = :multiinfo }
-          opts.on('-q', '--quiet',  'Print only package names') { options[:quiet]  = true       }
+          opts.on('-s', '--search', 'Search for packages')      { options[:search] = :search }
+          opts.on('-i', '--info',   'Show info for packages')   { options[:search] = :info   }
+          opts.on('-q', '--quiet',  'Print only package names') { options[:quiet]  = true    }
 
-          # configuration
-          # TODO:
+          # configuration, TODO: opts/config file
+          options[:build_dir] = '/tmp/raury'
+          options[:resolve]   = true
+          options[:show]      = false
+          options[:edit]      = :never
 
         end.parse!(argv)
 
@@ -102,19 +87,8 @@ module Raury
         raise InvalidUsage
       end
 
-      def build_plan(targets, options)
-        if [:download, :extract].include?(options[:level])
-          return BuildPlan.new(targets)
-        end
-
-        puts "resolving dependencies..."
-        BuildPlan.new.tap do |plan|
-          targets.each do |target|
-            Depends.resolve(target, plan, options[:level] == :build)
-          end
-        end
-      end
-
     end
   end
 end
+
+#Raury::Main.run! ['-Ss', 'aurget']
