@@ -1,5 +1,7 @@
 module Raury
   class Vercmp
+    include Comparable
+
     SEP = /[^a-z0-9]/i
 
     attr_reader :epoch, :version, :release
@@ -45,20 +47,21 @@ module Raury
           return  0
         end
 
-        # A purely numeric version is always higher.
-        return  1 if numeric?(seg_a) && !numeric?(seg_b)
-        return -1 if numeric?(seg_b) && !numeric?(seg_a)
+        if !(numeric?(seg_a) && numeric?(seg_b))
+          return  1 if numeric?(seg_a)
+          return -1 if numeric?(seg_b)
 
-        # This occurs when multiple separators are used in a row
-        # (effectively separating blank segments). Pacman states that
-        # more separators mean a higher version: 2___a > 2_a even though
-        # '' < 'a' at the segment level. Therefore, we've got to check
-        # and be explicitly backwards first.
-        return  1 if blank?(seg_a) && !blank?(seg_b)
-        return -1 if blank?(seg_b) && !blank?(seg_b)
+          if !(blank?(seg_a) && blank?(seg_b))
+            return  1 if blank?(seg_a)
+            return -1 if blank?(seg_b)
+          end
 
-        ret = seg_a <=> seg_b
-        return ret unless ret == 0
+          ret = seg_a <=> seg_b
+          return ret unless ret == 0
+        else
+          ret = seg_a.to_i <=> seg_b.to_i
+          return ret unless ret == 0
+        end
       end
     end
 
