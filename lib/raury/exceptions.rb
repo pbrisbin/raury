@@ -22,4 +22,8 @@ module Raury
   class BuildError < StandardError
 
   end
+
+  class NoTargets < StandardError
+
+  end
 end
