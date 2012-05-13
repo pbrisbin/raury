@@ -25,6 +25,11 @@ module Raury
 
       threads.map(&:join)
 
+      if results.empty?
+        puts 'there is nothing to do'
+        exit
+      end
+
       bp = BuildPlan.new(level, [])
       bp.set_results(results)
 
