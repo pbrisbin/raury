@@ -21,8 +21,16 @@ We shall see...
 $ rake
 ~~~
 
-# Running raury
+# Running raury (without installing)
 
 ~~~ 
 $ ruby -Ilib bin/raury --help
+~~~
+
+# Running raury (with installing)
+
+~~~ 
+$ gem install bundler
+$ rake install
+$ raury --help
 ~~~
