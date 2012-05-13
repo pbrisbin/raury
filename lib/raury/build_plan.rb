@@ -39,19 +39,34 @@ module Raury
       end
     end
 
-    def results
-      results = Rpc.new(:multiinfo, *targets.reverse).call
+    # used only in upgrades where we have all the results from the
+    # version check.
+    def set_results(results)
+      @results = results
+    end
 
-      if results.length != targets.length
-        # TODO: error on unavailable targets
+    def results
+      unless @results
+        raise NoTargets if targets.empty?
+
+        @results = Rpc.new(:multiinfo, *targets.reverse).call
+
+        if @results.length != targets.length
+          # TODO: error on unavailable targets
+        end
       end
 
-      results
+      @results
     end
 
     def continue?
-      # TODO:
-      return true
+      puts "Targets (#{results.length}): #{results.map(&:to_s).join(' ')}"
+      puts
+
+      print 'Proceed with installation? [Y/n] '
+      reply = $stdin.gets
+
+      reply.nil? || reply == '' || reply =~ /^y/i
     end
 
     def run!
