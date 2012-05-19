@@ -41,9 +41,12 @@ module Raury
       rescue => ex
         $stderr.puts "error: #{ex}"
 
-        $stderr.puts '', '-' * 80
-        $stderr.puts "#{ex.backtrace.join("\n")}"
-        $stderr.puts '-' * 80, ''
+        if Config.debug?
+          $stderr.puts '', '-' * 80
+          $stderr.puts "#{ex.backtrace.join("\n")}"
+          $stderr.puts '-' * 80, ''
+        end
+
         exit 1
       end
 
@@ -57,21 +60,22 @@ module Raury
           opts.banner =  'usage: raury [command] [options] [arguments]'
           opts.separator ''
           opts.separator 'Commands:'
-          opts.on(            '-S', '--sync',      'Process packages')       { command = :install }
-          opts.on(            '-u', '--upgrade',   'Upgrade packages')       { command = :upgrade }
-          opts.on(            '-s', '--search',    'Search for packages')    { command = :search  }
-          opts.on(            '-i', '--info',      'Show info for packages') { command = :info    }
+          opts.on(            '-S', '--sync',      'Process packages')        { command = :install }
+          opts.on(            '-u', '--upgrade',   'Upgrade packages')        { command = :upgrade }
+          opts.on(            '-s', '--search',    'Search for packages')     { command = :search  }
+          opts.on(            '-i', '--info',      'Show info for packages')  { command = :info    }
           opts.separator ''
           opts.separator 'Options:'
-          opts.on(            '-d', '--download',  'Stop after downloading') { config['sync_level'] = :download }
-          opts.on(            '-e', '--extract',   'Stop after extracting')  { config['sync_level'] = :extract  }
-          opts.on(            '-b', '--build',     'Stop after building')    { config['sync_level'] = :build    }
-          opts.on(            '-y', '--install',   'Install after building') { config['sync_level'] = :install  }
-          opts.on(            '--build-dir DIR',   'Set build directory')    { |d| config['build_directory'] = d }
-          opts.on(            '--ignore PKG',      'Ignore package')         { |p| config['ignores'] << p }
-          opts.on(            '--[no-]edit',       'Edit PKGBUILDs')         { |b| config['edit'] = b ? :always : :never }
-          opts.on(            '--[no-]deps',       'Resolve dependencies')   { |b| config['resolve'] = b }
-          opts.on(            '--[no]-discard',    'Discard sources')        { |b| config['discard'] = b }
+          opts.on(            '-d', '--download',  'Stop after downloading')  { config['sync_level'] = :download }
+          opts.on(            '-e', '--extract',   'Stop after extracting')   { config['sync_level'] = :extract  }
+          opts.on(            '-b', '--build',     'Stop after building')     { config['sync_level'] = :build    }
+          opts.on(            '-y', '--install',   'Install after building')  { config['sync_level'] = :install  }
+          opts.on(            '--build-dir DIR',   'Set build directory')     { |d| config['build_directory'] = d }
+          opts.on(            '--ignore PKG',      'Ignore package')          { |p| config['ignores'] << p }
+          opts.on(            '--[no-]edit',       'Edit PKGBUILDs')          { |b| config['edit'] = b ? :always : :never }
+          opts.on(            '--[no-]deps',       'Resolve dependencies')    { |b| config['resolve'] = b }
+          opts.on(            '--[no]-discard',    'Discard sources')         { |b| config['discard'] = b }
+          opts.on(            '--debug',           'Show debug output')       { config['debug'] = true    }
           opts.separator ''
           opts.on(            '-h', '--help',      'Display this screen') do
             puts opts

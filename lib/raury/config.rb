@@ -14,7 +14,8 @@ module Raury
     CONFIG_FILE = File.join(ENV['HOME'], '.rauryrc')
 
     # default behavior
-    DEFAULTS = { 'discard'   => false,
+    DEFAULTS = { 'debug'     => false,
+                 'discard'   => false,
                  'edit'      => :never,
                  'editor'    => ENV['EDITOR'] || 'vim',
                  'ignores'   => [],
@@ -33,12 +34,16 @@ module Raury
       end
     end
 
-    def resolve?
-      resolve
+    def debug?
+      debug
     end
 
     def descard?
       discard
+    end
+
+    def resolve?
+      resolve
     end
 
     def ignore?(pkg)
