@@ -77,10 +77,8 @@ module Raury
           opts.on(            '--[no]-discard',    'Discard sources')         { |b| config['discard'] = b }
           opts.on(            '--debug',           'Show debug output')       { config['debug'] = true    }
           opts.separator ''
-          opts.on(            '-h', '--help',      'Display this screen') do
-            puts opts
-            exit
-          end
+          opts.on(            '-h', '--help',      'Display this screen')     { puts opts; exit }
+          opts.separator ''
 
         end.parse!(argv)
 
@@ -93,5 +91,3 @@ module Raury
     end
   end
 end
-
-Raury::Main.run! %w( -Syu )
