@@ -16,14 +16,16 @@ module Raury
     # default behavior
     DEFAULTS = { 'debug'     => false,
                  'discard'   => false,
-                 'edit'      => :never,
+                 'edit'      => :prompt,
                  'editor'    => ENV['EDITOR'] || 'vim',
                  'ignores'   => [],
-                 'resolve'   => true,
+                 'resolve'   => false,
                  'sync_level'=> :install,
-                 'build_directory' => ENV['HOME'],
-                 'makepkg_options' => [],
-                 'pacman_options'  => [] }
+                 'build_directory' => ENV['HOME'] }
+
+    BOOLEANS =['debug', 'discard', 'resolve']
+
+    SYMBOLS = ['edit', 'sync_level']
 
     # delegate to our underlying hash of options
     def method_missing(meth, *args, &block)
@@ -34,16 +36,18 @@ module Raury
       end
     end
 
-    def debug?
-      debug
+    # add query methods for boolean settings
+    BOOLEANS.each do |key|
+      class_eval %[ def #{key}?; #{key} end ]
     end
 
-    def descard?
-      discard
+    # cast some options to symbols
+    SYMBOLS.each do |key|
+      class_eval %[ def #{key}; config['#{key}'].to_sym end ]
     end
 
-    def resolve?
-      resolve
+    def build_directory
+      File.expand_path(config['build_directory'])
     end
 
     def ignore?(pkg)
