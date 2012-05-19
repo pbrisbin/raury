@@ -39,7 +39,10 @@ module Raury
 
       rescue => ex
         $stderr.puts "error: #{ex}"
+
+        $stderr.puts '', '-' * 80
         $stderr.puts "#{ex.backtrace.join("\n")}"
+        $stderr.puts '-' * 80, ''
         exit 1
       end
 
@@ -67,7 +70,7 @@ module Raury
           opts.on(            '--ignore PKG',      'Ignore package')         { |p| config['ignores'] << p }
           opts.on(            '--[no-]edit',       'Edit PKGBUILDs')         { |b| config['edit'] = b ? :always : :never }
           opts.on(            '--[no-]deps',       'Resolve dependencies')   { |b| config['resolve'] = b }
-          opts.on(            '--[no]]-discard',   'Discard sources')        { |b| config['discard'] = b }
+          opts.on(            '--[no]-discard',    'Discard sources')        { |b| config['discard'] = b }
           opts.separator ''
           opts.on(            '-h', '--help',      'Display this screen') do
             puts opts
@@ -85,3 +88,5 @@ module Raury
     end
   end
 end
+
+#Raury::Main.run! %w( -S flimflap aurget  )

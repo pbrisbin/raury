@@ -30,7 +30,7 @@ module Raury
       end
 
       bp = BuildPlan.new
-      bp.set_results(results)
+      bp.set_results(results.sort)
 
       bp.run! if bp.continue?
     end

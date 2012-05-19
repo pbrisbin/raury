@@ -36,12 +36,6 @@ module Raury
       end
     end
 
-    # used only in upgrades where we have all the results from the
-    # version check.
-    def set_results(results)
-      @results = results
-    end
-
     def results
       unless @results
         raise NoTargets if targets.empty?
@@ -49,11 +43,17 @@ module Raury
         @results = Rpc.new(:multiinfo, *targets.reverse).call
 
         if @results.length != targets.length
-          # TODO: error on unavailable targets
+          raise NoResults.new((targets - @results.map(&:name)).first)
         end
       end
 
       @results
+    end
+
+    # used only in upgrades where we have all the results from the
+    # version check.
+    def set_results(results)
+      @results = results
     end
 
     def continue?
