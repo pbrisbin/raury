@@ -1,6 +1,6 @@
 module Raury
   class Upgrades
-    def self.process!
+    def self.build_plan
       local_results = `pacman -Qm`.split("\n").map do |line|
         name, version = line.split(' ')
 
@@ -32,7 +32,7 @@ module Raury
       bp = BuildPlan.new
       bp.set_results(results.sort)
 
-      bp.run! if bp.continue?
+      bp
     end
   end
 end

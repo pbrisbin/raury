@@ -24,17 +24,18 @@ module Raury
           return Search.new(*arguments).send(command)
         end
 
+        case command
+        when :upgrade
+          plan = Upgrades.build_plan
+        when :install
+          plan = BuildPlan.new(arguments)
+          plan.resolve_dependencies! if Config.resolve?
+        else
+          raise InvalidUsage
+        end
+
         Dir.chdir(Config.build_directory) do
-          case command
-          when :upgrade
-            Upgrades.process!
-          when :install
-            plan = BuildPlan.new(arguments)
-            plan.resolve_dependencies! if Config.resolve?
-            plan.run! if plan.continue?
-          else
-            raise InvalidUsage
-          end
+          plan.run! if plan.continue?
         end
 
       rescue => ex
@@ -89,4 +90,4 @@ module Raury
   end
 end
 
-#Raury::Main.run! %w( -S flimflap aurget  )
+Raury::Main.run! %w( -Syu )
