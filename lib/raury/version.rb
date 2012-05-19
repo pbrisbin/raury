@@ -1,3 +1,3 @@
-module Ruary
+module Raury
   VERSION = "0.0.1"
 end

@@ -3,11 +3,11 @@ $:.push File.expand_path("../lib", __FILE__)
 require "raury/version"
 
 Gem::Specification.new do |s|
-  s.name        = "ruary"
-  s.version     = Ruary::VERSION
+  s.name        = "raury"
+  s.version     = Raury::VERSION
   s.authors     = ["patrick brisbin"]
   s.email       = ["pbrisbin@gmail.com"]
-  s.homepage    = "http://github.com/pbrisbin/ruary"
+  s.homepage    = "http://github.com/pbrisbin/raury"
   s.summary     = "aur helper in ruby"
   s.description = "aur helper in ruby"
 
