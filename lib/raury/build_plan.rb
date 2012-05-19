@@ -1,9 +1,6 @@
 module Raury
   class BuildPlan
-    attr_reader :level
-
-    def initialize(level, targets)
-      @level   = level
+    def initialize(targets = [])
       @targets = targets
     end
 
@@ -70,6 +67,8 @@ module Raury
     end
 
     def run!
+      level = Config.sync_level
+
       results.each do |result|
         if level == :download
           Download.new(result).download

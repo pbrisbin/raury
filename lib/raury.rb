@@ -1,4 +1,5 @@
 require 'raury/exceptions'
+require 'raury/config'
 require 'raury/aur'
 require 'raury/result'
 require 'raury/rpc'
@@ -17,78 +18,65 @@ module Raury
     class << self
 
       def run!(argv)
-        options, arguments = parse_options(argv)
+        command, arguments = parse_options(argv)
 
-        Dir.chdir(options[:build_dir])
+        if [:search, :info].include?(command)
+          return Search.new(*arguments).send(command)
+        end
 
-        if method = options[:search]
-
-          search = Search.new(*arguments)
-          search.send(method)
-
-        elsif options[:sync]
-
-          if options[:upgrade]
-            Upgrades.process(options[:level])
-          else
-            plan = BuildPlan.new(options[:level], arguments)
-            plan.resolve_dependencies! if options[:resolve]
+        Dir.chdir(Config.build_directory) do
+          case command
+          when :upgrade
+            Upgrades.process!
+          when :install
+            plan = BuildPlan.new(arguments)
+            plan.resolve_dependencies! if Config.resolve?
             plan.run! if plan.continue?
+          else
+            raise InvalidUsage
           end
-
-        else raise InvalidUsage
         end
 
       rescue => ex
-        msg = case ex
-              when InvalidUsage then 'invalid usage. try -h or --help'
-              when NoTargets    then 'no targets specified (use -h for help)'
-              when NoResults    then 'no results found.'
-              when NetworkError then 'there was a network error talking to the AUR'
-              else "unhandled exception: #{ex}"
-              end
-
-        $stderr.puts "error: #{msg}"
+        $stderr.puts "error: #{ex}"
         $stderr.puts "#{ex.backtrace.join("\n")}"
         exit 1
       end
 
       private
 
-      # OptionParser wrapper. returns hash of options and remaining
-      # arguments.
       def parse_options(argv)
-        options = {}
+        command = nil
+        config  = Config.config
 
         OptionParser.new do |opts|
-          opts.banner = 'usage: raury [options] [arguments] ...'
-
-          opts.on('-h', '--help', 'Display this screen') do
+          opts.banner =  'usage: raury [command] [options] [arguments]'
+          opts.separator ''
+          opts.separator 'Commands:'
+          opts.on(            '-S', '--sync',      'Process packages')       { command = :install }
+          opts.on(            '-u', '--upgrade',   'Upgrade packages')       { command = :upgrade }
+          opts.on(            '-s', '--search',    'Search for packages')    { command = :search  }
+          opts.on(            '-i', '--info',      'Show info for packages') { command = :info    }
+          opts.separator ''
+          opts.separator 'Options:'
+          opts.on(            '-d', '--download',  'Stop after downloading') { config['sync_level'] = :download }
+          opts.on(            '-e', '--extract',   'Stop after extracting')  { config['sync_level'] = :extract  }
+          opts.on(            '-b', '--build',     'Stop after building')    { config['sync_level'] = :build    }
+          opts.on(            '-y', '--install',   'Install after building') { config['sync_level'] = :install  }
+          opts.on(            '--build-dir DIR',   'Set build directory')    { |d| config['build_directory'] = d }
+          opts.on(            '--ignore PKG',      'Ignore package')         { |p| config['ignores'] << p }
+          opts.on(            '--[no-]edit',       'Edit PKGBUILDs')         { |b| config['edit'] = b ? :always : :never }
+          opts.on(            '--[no-]deps',       'Resolve dependencies')   { |b| config['resolve'] = b }
+          opts.on(            '--[no]]-discard',   'Discard sources')        { |b| config['discard'] = b }
+          opts.separator ''
+          opts.on(            '-h', '--help',      'Display this screen') do
             puts opts
             exit
           end
 
-          # installations
-          opts.on('-S', '--sync',     'Install packages')       { options[:sync]    = true      }
-          opts.on('-u', '--upgrade',  'Upgrade packages')       { options[:upgrade] = true      }
-          opts.on('-d', '--download', 'Stop after downloading') { options[:level]   = :download }
-          opts.on('-e', '--extract',  'Stop after extracting')  { options[:level]   = :extract  }
-          opts.on('-b', '--build',    'Stop after building')    { options[:level]   = :build    }
-
-          # searching
-          opts.on('-s', '--search', 'Search for packages')      { options[:search] = :search }
-          opts.on('-i', '--info',   'Show info for packages')   { options[:search] = :info   }
-          opts.on('-q', '--quiet',  'Print only package names') { options[:quiet]  = true    }
-
-          # configuration, TODO: opts/config file
-          options[:build_dir] = '/tmp/raury'
-          options[:resolve]   = true
-          options[:show]      = false
-          options[:edit]      = :never
-
         end.parse!(argv)
 
-        [options, argv]
+        [command, argv]
 
       rescue OptionParser::InvalidOption
         raise InvalidUsage

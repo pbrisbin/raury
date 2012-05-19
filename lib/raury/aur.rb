@@ -16,7 +16,7 @@ module Raury
       Net::HTTP.get(@uri)
 
     rescue Exception => ex
-      raise NetworkException
+      raise NetworkException.new(ex)
     end
   end
 end

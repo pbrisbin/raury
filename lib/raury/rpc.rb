@@ -12,7 +12,8 @@ module Raury
                  else raise InvalidUsage
                  end
 
-      @rpc = Aur.new("/rpc.php?type=#{type}#{args_str}")
+      @args = args # for error message
+      @rpc  = Aur.new("/rpc.php?type=#{type}#{args_str}")
     end
 
     def call
@@ -29,7 +30,7 @@ module Raury
         end
       end
 
-      raise NoResults
+      raise NoResults.new(@args.first)
     end
 
     def to_arg(arg)

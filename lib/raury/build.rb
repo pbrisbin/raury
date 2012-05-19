@@ -6,15 +6,15 @@ module Raury
 
     def build(options = [])
       Dir.chdir(@package) do
-        raise NoPkgbuild unless File.exists?('PKGBUILD')
+        raise Errno::ENOENT unless File.exists?('PKGBUILD')
 
         unless system('makepkg', *options)
-          raise BuildError
+          raise BuildError.new(@package)
         end
       end
 
     rescue Errno::ENOENT
-      raise NoPkgbuild
+      raise NoPkgbuild.new(@package)
     end
   end
 end

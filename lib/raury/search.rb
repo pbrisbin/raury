@@ -21,7 +21,7 @@ module Raury
       if results.length != @arguments.length
         @arguments = @arguments - results.map(&:name)
 
-        raise NoResults
+        raise NoResults.new(@arguments.first)
       end
 
     rescue NoResults

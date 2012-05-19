@@ -3,7 +3,7 @@ require 'cgi'
 module Raury
   class Depends
     def self.resolve(name, bp)
-      deps = depends(name, bp.level == :build)
+      deps = depends(name, Config.sync_level == :build)
       deps ? bp.add_target(name) : bp.add_incidental(name)
 
       return if !deps || deps.empty?

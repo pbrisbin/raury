@@ -1,36 +1,35 @@
 module Raury
   class Upgrades
-    def self.process(level)
-
+    def self.process!
       local_results = `pacman -Qm`.split("\n").map do |line|
         name, version = line.split(' ')
 
-        Result.new(:multiinfo, {"Name" => name, "Version" => version})
+        Result.new(:multiinfo, {"Name" => name, "Version" => version}) rescue []
       end
-
-      up_to_date! if local_results.empty?
 
       results = []
       threads = []
 
-      local_results.each do |local_result|
-        threads << Thread.new do
-          result = Rpc.new(:info, local_result.name).call rescue nil
+      if local_results.any?
+        local_results.each do |local_result|
+          threads << Thread.new do
+            result = Rpc.new(:info, local_result.name).call rescue nil
 
-          if result && Vercmp.new(result.version) > Vercmp.new(local_result.version)
-            results << result
+            if result && Vercmp.new(result.version) > Vercmp.new(local_result.version)
+              results << result
+            end
           end
         end
-      end
 
-      threads.map(&:join)
+        threads.map(&:join)
+      end
 
       if results.empty?
         puts 'there is nothing to do'
         exit
       end
 
-      bp = BuildPlan.new(level, [])
+      bp = BuildPlan.new
       bp.set_results(results)
 
       bp.run! if bp.continue?
