@@ -1,5 +1,7 @@
 module Raury
   class BuildPlan
+    include Prompt
+
     def initialize(targets = [])
       @targets = targets
     end
@@ -31,6 +33,7 @@ module Raury
     end
 
     def resolve_dependencies!
+      puts 'resolving dependencies...'
       targets.each do |target|
         Depends.resolve(target, self)
       end
@@ -56,17 +59,12 @@ module Raury
       @results = results
     end
 
-    def continue?
-      puts "Targets (#{results.length}): #{results.map(&:to_s).join(' ')}"
-      puts
-
-      print 'Proceed with installation? [Y/n] '
-      reply = $stdin.gets
-
-      reply.nil? || reply == '' || reply =~ /^y/i
-    end
-
     def run!
+      puts 'searching the AUR...', ''
+      puts "Targets (#{results.length}): #{results.map(&:to_s).join(' ')}"
+
+      return unless prompt('Proceed with installation')
+
       level = Config.sync_level
 
       results.each do |result|
@@ -78,8 +76,6 @@ module Raury
       end
 
       return if [:download, :extract].include?(level)
-
-      # TODO: edit pkgbuild?
 
       results.each do |result|
         if level == :build

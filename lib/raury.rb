@@ -1,5 +1,7 @@
+require 'optparse'
 require 'raury/exceptions'
 require 'raury/config'
+require 'raury/prompt'
 require 'raury/aur'
 require 'raury/result'
 require 'raury/rpc'
@@ -11,12 +13,9 @@ require 'raury/depends'
 require 'raury/vercmp'
 require 'raury/upgrades'
 
-require 'optparse'
-
 module Raury
   class Main
     class << self
-
       def run!(argv)
         command, arguments = parse_options(argv)
 
@@ -35,7 +34,7 @@ module Raury
         end
 
         Dir.chdir(Config.build_directory) do
-          plan.run! if plan.continue?
+          plan.run!
         end
 
       rescue => ex
@@ -87,7 +86,8 @@ module Raury
       rescue OptionParser::InvalidOption
         raise InvalidUsage
       end
-
     end
   end
 end
+
+Raury::Main.run! %w[ -S --edit aurget ]

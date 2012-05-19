@@ -48,6 +48,12 @@ module Raury
     end
   end
 
+  class EditError < PkgError
+    def msg
+      'your editor returned non-zero. aborting.'
+    end
+  end
+
   class BuildError < PkgError
     def msg
       'failure while building'
