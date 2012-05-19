@@ -89,5 +89,3 @@ module Raury
     end
   end
 end
-
-Raury::Main.run! %w[ -S --edit aurget ]
