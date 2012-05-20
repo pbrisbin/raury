@@ -1,5 +1,5 @@
 require 'uri'
-require 'net/http'
+require 'net/https'
 
 module Raury
   # represents a resource available on the AUR: pkgbuilds, taurballs,
@@ -8,15 +8,16 @@ module Raury
     AUR = 'aur.archlinux.org'
 
     def initialize(path)
-      @uri = URI.parse("http://#{AUR}#{path}")
+      @uri = URI.parse("https://#{AUR}#{path}")
     end
 
     def fetch
-      # TODO: handle https
-      Net::HTTP.get(@uri)
+      http = Net::HTTP.new(@uri.host, 443)
+      http.use_ssl = true
+      http.request_get("#{@uri.path}?#{@uri.query}").body
 
     rescue Exception => ex
-      raise NetworkException.new(ex)
+      raise NetworkError.new(ex)
     end
   end
 end
