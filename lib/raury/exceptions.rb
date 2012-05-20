@@ -5,19 +5,19 @@ module Raury
     end
   end
 
+  class NoTargets < StandardError
+    def to_s
+      'No targets provided.'
+    end
+  end
+
   class NetworkError < StandardError
-    def intialize(ex = nil)
+    def initialize(ex = nil)
       @ex = ex
     end
 
     def to_s
-      "Network exception #{@ex ? @ex.to_s : '<unknown>'}"
-    end
-  end
-
-  class NoTargets < StandardError
-    def to_s
-      'No targets provided.'
+      "Network exception: #{@ex || '<unknown>'}"
     end
   end
 
