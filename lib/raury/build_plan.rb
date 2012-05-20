@@ -3,13 +3,24 @@ module Raury
     include Prompt
 
     def initialize(targets = [])
-      @targets = targets
+      targets.each do |t|
+        add_target(t)
+      end
     end
 
     def add_target(target)
       unless targets.include?(target)
-        targets << target
-        all     << target
+        if Config.ignore?(target)
+          if prompt("#{target} is ignored. Process anyway")
+            targets << target
+            all     << target
+          else
+            $stderr.puts "warning. skipping #{target}..."
+          end
+        else
+          targets << target
+          all     << target
+        end
       end
     end
 
