@@ -1,17 +1,18 @@
 require 'optparse'
-require 'raury/exceptions'
-require 'raury/config'
 require 'raury/prompt'
 require 'raury/aur'
+require 'raury/build'
+require 'raury/build_plan'
+require 'raury/config'
+require 'raury/depends'
+require 'raury/download'
+require 'raury/exceptions'
 require 'raury/result'
 require 'raury/rpc'
 require 'raury/search'
-require 'raury/download'
-require 'raury/build'
-require 'raury/build_plan'
-require 'raury/depends'
-require 'raury/vercmp'
 require 'raury/upgrades'
+require 'raury/vercmp'
+require 'raury/version'
 
 module Raury
   class Main
@@ -69,12 +70,15 @@ module Raury
           opts.on(            '-e', '--extract',   'Stop after extracting')   { config['sync_level'] = :extract  }
           opts.on(            '-b', '--build',     'Stop after building')     { config['sync_level'] = :build    }
           opts.on(            '-y', '--install',   'Install after building')  { config['sync_level'] = :install  }
+          opts.separator ''
           opts.on(            '--build-dir DIR',   'Set build directory')     { |d| config['build_directory'] = d }
           opts.on(            '--ignore PKG',      'Ignore package')          { |p| config['ignores'] << p }
           opts.on(            '--[no-]edit',       'Edit PKGBUILDs')          { |b| config['edit'] = b ? :always : :never }
           opts.on(            '--[no-]deps',       'Resolve dependencies')    { |b| config['resolve'] = b }
           opts.on(            '--[no]-discard',    'Discard sources')         { |b| config['discard'] = b }
-          opts.on(            '--debug',           'Show debug output')       { config['debug'] = true    }
+          opts.separator ''
+          opts.on(            '--version',         'Show version')            { puts "raury #{VERSION}"; exit }
+          opts.on(            '--debug',           'Show debug output')       { config['debug'] = true }
           opts.separator ''
           opts.on(            '-h', '--help',      'Display this screen')     { puts opts; exit }
           opts.separator ''
