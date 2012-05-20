@@ -70,6 +70,11 @@ module Raury
              "Name            : #{name}",
              "Version         : #{version}",
              "URL             : #{url}",
+             "License         : #{license}",
+             "Maintainer      : #{maintainer}",
+             "Submitted       : #{submitted}",
+             "Modified        : #{modified}",
+             "Votes:          : #{votes}",
              "Out of date     : #{out_of_date ? 'Yes' : 'No'}",
              "Description     : #{description}", ''
       end
