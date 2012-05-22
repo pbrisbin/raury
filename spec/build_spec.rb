@@ -5,20 +5,27 @@ describe Raury::Build do
     Dir.stub(:chdir).and_yield
     File.stub(:exists?).and_return(true)
 
+    Raury::Config.stub(:color?).and_return(true)
+    Raury::Config.stub(:resolve?).and_return(false)
+    Raury::Config.stub(:sync_level).and_return(:build)
 
     b = Raury::Build.new('aurget')
     b.should_receive(:system).with('makepkg').and_return(true)
     b.build
   end
 
-  it "should accept makepkg options" do
+  it "should add makepkg options" do
     Dir.stub(:chdir).and_yield
     File.stub(:exists?).and_return(true)
 
+    Raury::Config.stub(:color?).and_return(false)
+    Raury::Config.stub(:confirm?).and_return(false)
+    Raury::Config.stub(:resolve?).and_return(true)
+    Raury::Config.stub(:sync_level).and_return(:install)
 
     b = Raury::Build.new('aurget')
-    b.should_receive(:system).with('makepkg', '-i', '-s').and_return(true)
-    b.build(['-i', '-s'])
+    b.should_receive(:system).with('makepkg', '--nocolor', '--noconfirm', '-s', '-i').and_return(true)
+    b.build
   end
 
   it "should raise when not extracted" do

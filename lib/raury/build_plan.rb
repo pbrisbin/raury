@@ -89,11 +89,7 @@ module Raury
       return if [:download, :extract].include?(level)
 
       results.each do |result|
-        if level == :build
-          Build.new(result.name).build(['-s'])
-        else
-          Build.new(result.name).build(['-s', '-i'])
-        end
+        Build.new(result.name).build
       end
     end
   end
