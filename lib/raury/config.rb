@@ -14,18 +14,18 @@ module Raury
     CONFIG_FILE = File.join(ENV['HOME'], '.rauryrc')
 
     # default behavior
-    DEFAULTS = { 'color'      => false,
+    DEFAULTS = { 'color'      => true,
                  'confirm'    => true,
                  'debug'      => false,
-                 'discard'    => false,
                  'edit'       => :prompt,
                  'editor'     => ENV['EDITOR'] || 'vim',
                  'ignores'    => [],
                  'resolve'    => false,
                  'sync_level' => :install,
-                 'build_directory' => ENV['HOME'] }
+                 'build_directory' => ENV['HOME'],
+                 'makepkg_options' => [] }
 
-    BOOLEANS = ['color', 'confirm', 'debug', 'discard', 'resolve']
+    BOOLEANS = ['color', 'confirm', 'debug', 'resolve']
     SYMBOLS  = ['edit', 'sync_level']
 
     # delegate to our underlying hash of options
