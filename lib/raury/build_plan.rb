@@ -1,6 +1,7 @@
 module Raury
   class BuildPlan
     include Prompt
+    include Output
 
     def initialize(targets = [])
       targets.each do |t|
@@ -15,7 +16,7 @@ module Raury
             targets << target
             all     << target
           else
-            $stderr.puts "warning. skipping #{target}..."
+            warn("skipping #{target}...")
           end
         else
           targets << target
@@ -72,7 +73,7 @@ module Raury
 
     def run!
       puts 'searching the AUR...', ''
-      puts "Targets (#{results.length}): #{results.map(&:to_s).join(' ')}"
+      puts "#{yellow "Targets (#{results.length}):"} #{results.map(&:to_s).join(' ')}"
 
       return unless prompt('Proceed with installation')
 
