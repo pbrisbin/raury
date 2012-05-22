@@ -1,0 +1,17 @@
+PATH
+  remote: .
+  specs:
+    raury (0.0.1)
+      paint
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    paint (0.8.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  paint
+  raury!
