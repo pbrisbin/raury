@@ -30,7 +30,8 @@ $ rake
 ## Try it
 
 ~~~ 
-$ ruby -Ilib bin/raury --help
+$ bundle install
+$ bundle exec bin/raury --help
 ~~~
 
 ## Installation
@@ -52,8 +53,8 @@ Done:
 5. Edit PKGBUILDs before building
 6. Config file and commandline options
 7. Pass-through makepkg options
+8. Color
 
 Planned:
 
 1. Handle "development" packages specially
-2. Colorized output

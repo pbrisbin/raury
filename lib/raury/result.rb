@@ -12,6 +12,8 @@ module Raury
   #   => true
   #
   class Result
+    include Output
+
     # define an instance method called +method+, which accesses the
     # internal json hash by +key+. if +conversion+ is not nil, it's
     # called on the value before returning it.
@@ -63,20 +65,20 @@ module Raury
 
     def display
       if type == :search
-        puts "aur/#{name} #{version}#{out_of_date ? ' [out of date]' : ''}",
+        puts "#{magenta 'aur'}/#{white name} #{green version}#{out_of_date ? red(' [out of date]') : ''}",
              "    #{description}"
       else
-        puts "Repository      : aur",
-             "Name            : #{name}",
-             "Version         : #{version}",
-             "URL             : #{url}",
-             "License         : #{license}",
-             "Maintainer      : #{maintainer}",
-             "Submitted       : #{submitted}",
-             "Modified        : #{modified}",
-             "Votes:          : #{votes}",
-             "Out of date     : #{out_of_date ? 'Yes' : 'No'}",
-             "Description     : #{description}", ''
+        puts "#{white 'Repository      :'} #{magenta 'aur'}",
+             "#{white 'Name            :'} #{white name}",
+             "#{white 'Version         :'} #{green version}",
+             "#{white 'URL             :'} #{url}",
+             "#{white 'License         :'} #{license}",
+             "#{white 'Maintainer      :'} #{maintainer}",
+             "#{white 'Submitted       :'} #{submitted}",
+             "#{white 'Modified        :'} #{modified}",
+             "#{white 'Votes:          :'} #{votes}",
+             "#{white 'Out of date     :'} #{out_of_date ? red('Yes') : 'No'}",
+             "#{white 'Description     :'} #{description}", ''
       end
     end
 

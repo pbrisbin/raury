@@ -1,4 +1,5 @@
 require 'optparse'
+require 'raury/output'
 require 'raury/prompt'
 require 'raury/aur'
 require 'raury/build'
@@ -17,6 +18,8 @@ require 'raury/version'
 module Raury
   class Main
     class << self
+      include Output
+
       def run!(argv)
         command, arguments = parse_options(argv)
 
@@ -39,14 +42,8 @@ module Raury
         end
 
       rescue => ex
-        $stderr.puts "error: #{ex}"
-
-        if Config.debug?
-          $stderr.puts '', '-' * 80
-          $stderr.puts "#{ex.backtrace.join("\n")}"
-          $stderr.puts '-' * 80, ''
-        end
-
+        error "#{ex}"
+        debug "#{ex.backtrace.join("\n")}"
         exit 1
       end
 
