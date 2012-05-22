@@ -24,6 +24,7 @@ Checking for available upgrades:
 ## Running specs
 
 ~~~ 
+$ bundle install
 $ rake
 ~~~
 
@@ -37,7 +38,6 @@ $ bundle exec bin/raury --help
 ## Installation
 
 ~~~ 
-$ gem install bundler
 $ rake install
 $ raury --help
 ~~~
