@@ -73,9 +73,12 @@ module Raury
           opts.separator ''
           opts.on(            '--build-dir DIR',   'Set build directory')     { |d| config['build_directory'] = d }
           opts.on(            '--ignore PKG',      'Ignore package')          { |p| config['ignores'] << p }
-          opts.on(            '--[no-]edit',       'Edit PKGBUILDs')          { |b| config['edit'] = b ? :always : :never }
+          opts.separator ''
+          opts.on(            '--[no-]color',      'Colorize output')         { |b| config['color']   = b }
+          opts.on(            '--[no-]confirm',    'Auto-answer prompts')     { |b| config['confirm'] = b }
           opts.on(            '--[no-]deps',       'Resolve dependencies')    { |b| config['resolve'] = b }
-          opts.on(            '--[no]-discard',    'Discard sources')         { |b| config['discard'] = b }
+          opts.on(            '--[no-]discard',    'Discard sources')         { |b| config['discard'] = b }
+          opts.on(            '--[no-]edit',       'Edit PKGBUILDs')          { |b| config['edit']    = b ? :always : :never }
           opts.separator ''
           opts.on(            '--version',         'Show version')            { puts "raury #{VERSION}"; exit }
           opts.on(            '--debug',           'Show debug output')       { config['debug'] = true }

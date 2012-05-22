@@ -14,7 +14,9 @@ module Raury
     CONFIG_FILE = File.join(ENV['HOME'], '.rauryrc')
 
     # default behavior
-    DEFAULTS = { 'debug'      => false,
+    DEFAULTS = { 'color'      => false,
+                 'confirm'    => true,
+                 'debug'      => false,
                  'discard'    => false,
                  'edit'       => :prompt,
                  'editor'     => ENV['EDITOR'] || 'vim',
@@ -23,7 +25,7 @@ module Raury
                  'sync_level' => :install,
                  'build_directory' => ENV['HOME'] }
 
-    BOOLEANS = ['debug', 'discard', 'resolve']
+    BOOLEANS = ['color', 'confirm', 'debug', 'discard', 'resolve']
     SYMBOLS  = ['edit', 'sync_level']
 
     # delegate to our underlying hash of options
