@@ -2,26 +2,14 @@ require 'paint'
 
 module Raury
   module Output
-    COLOR_METHODS = [ :white,
-                      :magenta,
-                      :green,
-                      :red,
-                      :cyan,
-                      :yellow,
-                      :black ]
-
-    Paint::SHORTCUTS[:raury] = {}.tap do |hsh|
-      COLOR_METHODS.each do |c|
-        hsh[c] = Paint.color(c, :bright)
-      end
-    end
+    COLORS = [ :black, :red, :green, :yellow, :blue, :magenta, :cyan, :white ]
 
     def self.included(base)
-      COLOR_METHODS.each do |c|
+      COLORS.each do |c|
         base.class_eval %{
           def #{c}(str)
             if Config.color?
-              Paint::Raury.#{c}(str)
+              Paint[str, #{c.inspect}, :bright]
             else
               str
             end
@@ -31,13 +19,7 @@ module Raury
     end
 
     def debug(msg)
-      return unless Config.debug?
-
-      divider = black('-' * 80)
-
-      puts '', divider
-      puts black(msg)
-      puts divider, ''
+      $stderr.puts black(msg) if Config.debug?
     end
 
     def warn(msg)
