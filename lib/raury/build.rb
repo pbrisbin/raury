@@ -7,12 +7,12 @@ module Raury
     end
 
     def build
-      options = [].tap do |arr|
-        arr << '--nocolor'   unless Config.color?
-        arr << '--noconfirm' unless Config.confirm?
-        arr << '-s' if Config.resolve?
-        arr << '-i' if Config.sync_level == :install
-      end
+      options = Config.makepkg_options
+
+      options << '--nocolor'   unless Config.color?
+      options << '--noconfirm' unless Config.confirm?
+      options << '-s' if Config.resolve?
+      options << '-i' if Config.sync_level == :install
 
       Dir.chdir(@package) do
         raise Errno::ENOENT unless File.exists?('PKGBUILD')
