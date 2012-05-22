@@ -4,11 +4,9 @@ module Raury
       @arguments = arguments
     end
 
-    def search(quiet = false)
+    def search
       results = Rpc.new(:search, *@arguments).call
-
-      quiet ? puts(*results.map(&:name))
-            :       results.map(&:display)
+      results.map(&:display)
 
     rescue NoResults
       exit 1
