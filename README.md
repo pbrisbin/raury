@@ -51,13 +51,9 @@ Done:
 4. Resolve dependencies
 5. Edit PKGBUILDs before building
 6. Config file and commandline options
+7. Pass-through makepkg options
 
 Planned:
 
-1. Keep/discard build files
-2. Handle "development" packages specially
-3. Custom makepkg options
-4. `--asroot`
-5. `--rebuild`
-6. `--[no-]color`
-7. `--[no-]confirm`
+1. Handle "development" packages specially
+2. Colorized output
