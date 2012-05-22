@@ -20,6 +20,13 @@ module Raury
       def run!(argv)
         command, arguments = parse_options(argv)
 
+        if Config.debug?
+          puts '', '-' * 80
+          puts "running '#{command}' with arguments '#{arguments.join(', ')}'"
+          puts "configuration: #{Config.config.inspect}"
+          puts '-' * 80, ''
+        end
+
         if [:search, :info].include?(command)
           return Search.new(*arguments).send(command)
         end
