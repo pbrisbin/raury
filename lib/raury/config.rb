@@ -14,18 +14,17 @@ module Raury
     CONFIG_FILE = File.join(ENV['HOME'], '.rauryrc')
 
     # default behavior
-    DEFAULTS = { 'debug'     => false,
-                 'discard'   => false,
-                 'edit'      => :prompt,
-                 'editor'    => ENV['EDITOR'] || 'vim',
-                 'ignores'   => [],
-                 'resolve'   => false,
-                 'sync_level'=> :install,
+    DEFAULTS = { 'debug'      => false,
+                 'discard'    => false,
+                 'edit'       => :prompt,
+                 'editor'     => ENV['EDITOR'] || 'vim',
+                 'ignores'    => [],
+                 'resolve'    => false,
+                 'sync_level' => :install,
                  'build_directory' => ENV['HOME'] }
 
-    BOOLEANS =['debug', 'discard', 'resolve']
-
-    SYMBOLS = ['edit', 'sync_level']
+    BOOLEANS = ['debug', 'discard', 'resolve']
+    SYMBOLS  = ['edit', 'sync_level']
 
     # delegate to our underlying hash of options
     def method_missing(meth, *args, &block)
