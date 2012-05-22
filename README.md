@@ -40,3 +40,24 @@ $ gem install bundler
 $ rake install
 $ raury --help
 ~~~
+
+## Project state
+
+Done:
+
+1. Search/Info
+2. Download/Extract/Build/Install
+3. Process available upgrades
+4. Resolve dependencies
+5. Edit PKGBUILDs before building
+6. Config file and commandline options
+
+Planned:
+
+1. Keep/discard build files
+2. Handle "development" packages specially
+3. Custom makepkg options
+4. `--asroot`
+5. `--rebuild`
+6. `--[no-]color`
+7. `--[no-]confirm`
