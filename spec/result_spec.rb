@@ -2,6 +2,10 @@ require 'raury'
 require 'spec_helper'
 
 describe Raury::Result do
+  before do
+    Raury::Config.config['color'] = false
+  end
+
   context "instance" do
     search_result = Raury::Result.new(
       :search,
