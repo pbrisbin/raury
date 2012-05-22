@@ -43,7 +43,10 @@ module Raury
 
       rescue => ex
         error "#{ex}"
-        debug "#{ex.backtrace.join("\n")}"
+
+        debug('')
+        debug("Trace: #{ex.backtrace.join("\n")}")
+
         exit 1
       end
 
