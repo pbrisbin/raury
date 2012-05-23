@@ -11,7 +11,7 @@ module Raury
           if (r = Config.development_regex) && name =~ r
             debug("ignoring #{name} due to development regex")
           else
-            local_results << Result.new(:multiinfo, {"Name" => name, "Version" => version})
+            local_results << Result.new(:info, {"Name" => name, "Version" => version})
           end
         end
 
