@@ -23,6 +23,8 @@ module Raury
       def run!(argv)
         command, arguments = parse_options(argv)
 
+        debug("running '#{command} #{arguments}'")
+
         if [:search, :info].include?(command)
           return Search.new(*arguments).send(command)
         end
@@ -45,7 +47,8 @@ module Raury
         error "#{ex}"
 
         debug('')
-        debug("Trace: #{ex.backtrace.join("\n")}")
+        debug('-' * 80)
+        debug("call stack: #{ex.backtrace.join("\n")}")
 
         exit 1
       end
