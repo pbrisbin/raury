@@ -77,8 +77,8 @@ module Raury
     end
 
     def run!
-      puts 'searching the AUR...', ''
-      puts "#{yellow "Targets (#{results.length}):"} #{results.map(&:to_s).join(' ')}"
+      puts 'searching the AUR...'
+      puts '', "#{yellow "Targets (#{results.length}):"} #{results.map(&:to_s).join(' ')}"
 
       return unless prompt('Proceed with installation')
 
