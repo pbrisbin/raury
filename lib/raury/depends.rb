@@ -23,8 +23,6 @@ module Raury
 
       return nil if pkgbuild =~ /not found/i
 
-      # TODO: display pkgbuild, prompt: continue?
-
       deps = IO.popen('bash', 'r+') do |h|
         h.write(%{
 #{pkgbuild}
