@@ -13,12 +13,14 @@ module Raury
       unless targets.include?(target)
         if Config.ignore?(target)
           if prompt("#{target} is ignored. Process anyway")
+            debug("adding #{target} to build_plan")
             targets << target
             all     << target
           else
             warn("skipping #{target}...")
           end
         else
+          debug("adding #{target} to build_plan")
           targets << target
           all     << target
         end
@@ -27,6 +29,7 @@ module Raury
 
     def add_incidental(incidental)
       unless incidentals.include?(incidental)
+        debug("#{incidental} may be installed by pacman")
         incidentals << incidental
         all         << incidental
       end
@@ -55,9 +58,11 @@ module Raury
       unless @results
         raise NoTargets if targets.empty?
 
+        debug("fetching info for '#{targets.join(', ')}'")
         @results = Rpc.new(:multiinfo, *targets.reverse).call
 
         if @results.length != targets.length
+          debug("not all targets available")
           raise NoResults.new((targets - @results.map(&:name)).first)
         end
       end
@@ -81,8 +86,10 @@ module Raury
 
       results.each do |result|
         if level == :download
+          debug("downloading #{result}")
           Download.new(result).download
         else
+          debug("extracting #{result}")
           Download.new(result).extract
         end
       end
@@ -90,6 +97,7 @@ module Raury
       return if [:download, :extract].include?(level)
 
       results.each do |result|
+        debug("building #{result}")
         Build.new(result.name).build
       end
     end
