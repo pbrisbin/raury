@@ -1,5 +1,9 @@
+# mixins
 require 'raury/output'
+require 'raury/pacman'
 require 'raury/prompt'
+
+# classes
 require 'raury/aur'
 require 'raury/build'
 require 'raury/build_plan'

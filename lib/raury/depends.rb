@@ -2,6 +2,8 @@ require 'cgi'
 
 module Raury
   class Depends
+    extend Pacman
+
     def self.resolve(name, bp)
       deps = depends(name, Config.sync_level == :build)
       deps ? bp.add_target(name) : bp.add_incidental(name)
@@ -33,13 +35,7 @@ printf "%s\\n" "${makedepends[@]}"#{build_only ? '' : ' "${depends[@]}"'}
         h.read.split("\n")
       end
 
-      `pacman -T -- #{quote deps}`.split("\n").map {|d| d.sub(/(==?|>=|<=).*$/, '') }
-    end
-
-    private
-
-    def self.quote(args)
-      args.map { |arg| "'#{arg}'" }.join(' ')
+      pacman_T deps
     end
   end
 end

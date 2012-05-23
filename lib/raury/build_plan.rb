@@ -56,14 +56,18 @@ module Raury
 
     def results
       unless @results
-        raise NoTargets if targets.empty?
+        raise NoTargets if targets.uniq!.empty?
 
         debug("fetching info for '#{targets.join(', ')}'")
         @results = Rpc.new(:multiinfo, *targets.reverse).call
 
         if @results.length != targets.length
-          debug("not all targets available")
-          raise NoResults.new((targets - @results.map(&:name)).first)
+          missing = targets - @results.map(&:name)
+
+          debug("not all build targets are available.")
+          debug("#{missing.length} missing: #{missing.sort}")
+
+          raise NoResults.new(missing.first)
         end
       end
 

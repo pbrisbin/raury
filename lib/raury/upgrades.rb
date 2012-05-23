@@ -2,17 +2,18 @@ module Raury
   class Upgrades
     class << self
       include Output
+      include Pacman
 
       def build_plan
-        local_results = `pacman -Qm`.split("\n").map do |line|
-          name, version = line.split(' ')
+        local_results = []
 
+        pacman_Qm.each do |name,version|
           if (r = Config.development_regex) && name =~ r
             debug("ignoring #{name} due to development regex")
           else
-            Result.new(:multiinfo, {"Name" => name, "Version" => version})
+            local_results << Result.new(:multiinfo, {"Name" => name, "Version" => version})
           end
-        end.compact
+        end
 
         results = []
         threads = []
