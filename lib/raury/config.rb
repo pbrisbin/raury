@@ -23,7 +23,7 @@ module Raury
                  'resolve'    => false,
                  'sync_level' => :install,
                  'build_directory'   => ENV['HOME'],
-                 'development_regex' => /-(git|hg|svn|darcs|-cvs|-bzr)$/,
+                 'development_regex' => /-(git|hg|svn|darcs|cvs|bzr)$/,
                  'makepkg_options'   => [] }
 
     BOOLEANS = ['color', 'confirm', 'debug', 'resolve']
