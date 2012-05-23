@@ -93,6 +93,7 @@ module Raury
           mopt(opts, config,   '-L', '--log',           'Log package build process')
           mopt(opts, config,   '-r', '--rmdeps',        'Remove installed dependencies after a successful build')
           mopt(opts, config,         '--asroot',        'Allow makepkg to run as root user')
+          mopt(opts, config,         '--sign',          'Sign the resulting package with gpg')
           mopt(opts, config,         '--skipinteg',     'Do not perform any verification checks on source files')
           opts.separator ''
 
