@@ -4,6 +4,7 @@ require 'yaml'
 module Raury
   class Config
     include Singleton
+    include Prompt
 
     # delegate to our singleton instance
     def self.method_missing(meth, *args, &block)
@@ -27,7 +28,13 @@ module Raury
                  'makepkg_options'   => [] }
 
     BOOLEANS = ['color', 'confirm', 'debug', 'resolve']
-    SYMBOLS  = ['edit', 'sync_level']
+
+    SYMBOLS = ['edit', 'sync_level']
+
+    LEVELS = { :download => [ :download                  ],
+               :extract  => [ :extract, :build, :install ],
+               :build    => [           :build, :install ],
+               :install  => [                   :install ] }
 
     # delegate to our underlying hash of options
     def method_missing(meth, *args, &block)
@@ -48,12 +55,26 @@ module Raury
       class_eval %[ def #{key}; config['#{key}'].to_sym end ]
     end
 
+    # add query methods around sync level
+    LEVELS.each do |meth,levels|
+      class_eval %[ def #{meth}?; #{levels}.include?(sync_level) end ]
+    end
+
     def build_directory
       File.expand_path(config['build_directory'])
     end
 
     def ignore?(pkg)
       ignores.include?(pkg)
+    end
+
+    def edit?(pkg)
+      if edit == :prompt
+        return prompt("Edit PKGBUILD for #{pkg}")
+      end
+
+      # ensure true on misconfigured value
+      return edit != :never
     end
 
     def config

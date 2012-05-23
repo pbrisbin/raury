@@ -13,19 +13,19 @@ module Raury
       options << '--nocolor'   unless Config.color?
       options << '--noconfirm' unless Config.confirm?
       options << '-s' if Config.resolve?
-      options << '-i' if Config.sync_level == :install
+      options << '-i' if Config.install?
 
       Dir.chdir(@package) do
         raise Errno::ENOENT unless File.exists?('PKGBUILD')
 
-        if edit?
+        if Config.edit?(@package)
           debug("running '#{Config.editor} PKGBUILD'")
           unless system("#{Config.editor} 'PKGBUILD'")
             debug("editor returned #{$?}")
             raise EditError.new(@package)
           end
 
-          return unless continue?
+          return unless prompt('Continue')
         end
 
         debug("running 'makepkg #{options.join(' ')}'")
@@ -37,19 +37,6 @@ module Raury
 
     rescue Errno::ENOENT
       raise NoPkgbuild.new(@package)
-    end
-
-    private
-
-    def edit?
-      return true  if Config.edit == :always
-      return false if Config.edit == :never
-
-      prompt("Edit PKGBUILD for #{@package}")
-    end
-
-    def continue?
-      prompt('Continue')
     end
   end
 end

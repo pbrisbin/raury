@@ -82,10 +82,8 @@ module Raury
 
       return unless prompt('Proceed with installation')
 
-      level = Config.sync_level
-
       results.each do |result|
-        if level == :download
+        if Config.download?
           debug("downloading #{result}")
           Download.new(result).download
         else
@@ -94,7 +92,7 @@ module Raury
         end
       end
 
-      return if [:download, :extract].include?(level)
+      return unless Config.build?
 
       results.each do |result|
         debug("building #{result}")
