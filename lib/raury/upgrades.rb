@@ -7,12 +7,11 @@ module Raury
         local_results = `pacman -Qm`.split("\n").map do |line|
           name, version = line.split(' ')
 
-          if name =~ Config.development_regex
+          if (r = Config.development_regex) && name =~ r
             debug("ignoring #{name} due to development regex")
           else
-            Result.new(:multiinfo, {"Name" => name, "Version" => version}) rescue []
+            Result.new(:multiinfo, {"Name" => name, "Version" => version})
           end
-
         end.compact
 
         results = []
@@ -39,10 +38,9 @@ module Raury
           exit
         end
 
-        bp = BuildPlan.new
-        bp.set_results(results.sort)
-
-        bp
+        BuildPlan.new.tap do |bp|
+          bp.set_results(results.sort)
+        end
       end
     end
   end
