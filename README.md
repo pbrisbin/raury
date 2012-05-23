@@ -54,7 +54,4 @@ Done:
 6. Config file and commandline options
 7. Pass-through makepkg options
 8. Color
-
-Planned:
-
-1. Handle "development" packages specially
+9. Handle "development" packages specially
