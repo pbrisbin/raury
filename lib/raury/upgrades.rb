@@ -7,8 +7,13 @@ module Raury
         local_results = `pacman -Qm`.split("\n").map do |line|
           name, version = line.split(' ')
 
-          Result.new(:multiinfo, {"Name" => name, "Version" => version}) rescue []
-        end
+          if name =~ Config.development_regex
+            debug("ignoring #{name} due to development regex")
+          else
+            Result.new(:multiinfo, {"Name" => name, "Version" => version}) rescue []
+          end
+
+        end.compact
 
         results = []
         threads = []
