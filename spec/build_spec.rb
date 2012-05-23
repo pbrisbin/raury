@@ -1,30 +1,37 @@
 require 'raury'
+require 'spec_helper'
 
 describe Raury::Build do
-  it "should build a package" do
+  before do
     Dir.stub(:chdir).and_yield
     File.stub(:exists?).and_return(true)
 
-    Raury::Config.stub(:color?).and_return(true)
-    Raury::Config.stub(:resolve?).and_return(false)
-    Raury::Config.stub(:sync_level).and_return(:build)
+    defs = Raury::Config::DEFAULTS.dup
+    Raury::Config.instance.stub(:config).and_return(defs)
+    Raury::Config.stub(:edit?).and_return(false)
+    Raury::Config.stub(:makepkg_options).and_return([])
+  end
 
+  it "should build and install package" do
     b = Raury::Build.new('aurget')
-    b.should_receive(:system).with('makepkg').and_return(true)
+    b.should_receive(:system).with('makepkg', '-i').and_return(true)
     b.build
   end
 
-  it "should add makepkg options" do
-    Dir.stub(:chdir).and_yield
-    File.stub(:exists?).and_return(true)
-
-    Raury::Config.stub(:color?).and_return(false)
-    Raury::Config.stub(:confirm?).and_return(false)
+  it "should add makepkg options for resolving" do
     Raury::Config.stub(:resolve?).and_return(true)
-    Raury::Config.stub(:sync_level).and_return(:install)
 
     b = Raury::Build.new('aurget')
-    b.should_receive(:system).with('makepkg', '--nocolor', '--noconfirm', '-s', '-i').and_return(true)
+    b.should_receive(:system).with('makepkg', '-s', '-i').and_return(true)
+    b.build
+  end
+
+  it "should add makepkg options for color/confirm" do
+    Raury::Config.stub(:color?).and_return(false)
+    Raury::Config.stub(:confirm?).and_return(false)
+
+    b = Raury::Build.new('aurget')
+    b.should_receive(:system).with('makepkg', '--nocolor', '--noconfirm', '-i').and_return(true)
     b.build
   end
 
@@ -35,7 +42,6 @@ describe Raury::Build do
   end
 
   it "should raise when no PKGBUILD" do
-    Dir.stub(:chdir).and_yield
     File.stub(:exists?).and_return(false)
 
     lambda { Raury::Build.new('aurget').build }.should raise_error(Raury::NoPkgbuild)
