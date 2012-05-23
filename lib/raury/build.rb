@@ -1,6 +1,7 @@
 module Raury
   class Build
     include Prompt
+    include Output
 
     def initialize(package)
       @package = package
@@ -18,14 +19,18 @@ module Raury
         raise Errno::ENOENT unless File.exists?('PKGBUILD')
 
         if edit?
+          debug("running '#{Config.editor} PKGBUILD'")
           unless system("#{Config.editor} 'PKGBUILD'")
+            debug("editor returned #{$?}")
             raise EditError.new(@package)
           end
 
           return unless continue?
         end
 
+        debug("running 'makepkg #{options.join(' ')}'")
         unless system('makepkg', *options)
+          debug("makepkg returned #{$?}")
           raise BuildError.new(@package)
         end
       end
