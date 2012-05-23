@@ -19,15 +19,15 @@ module Raury
     end
 
     def debug(msg)
-      $stderr.puts black(msg) if Config.debug?
+      $stderr.print "#{black(msg)}\n" if Config.debug?
     end
 
     def warn(msg)
-      $stderr.puts "#{yellow 'warning:'} #{msg}"
+      $stderr.print "#{yellow 'warning:'} #{msg}\n"
     end
 
     def error(msg)
-      $stderr.puts "#{red 'error:'} #{msg}"
+      $stderr.print "#{red 'error:'} #{msg}\n"
     end
   end
 end
