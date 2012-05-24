@@ -22,8 +22,8 @@ module Raury
   end
 
   class PkgError < StandardError
-    def initialize(pkg)
-      @pkg = pkg
+    def initialize(pkg = nil)
+      @pkg = pkg || 'unknown'
     end
 
     # subclass should override
