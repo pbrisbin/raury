@@ -23,11 +23,11 @@ module Raury
           o.on(            '-b', '--build',          'Stop after building')     { conf['sync_level'] = :build    }
           o.on(            '-y', '--install',        'Install after building')  { conf['sync_level'] = :install  }
           o.separator ''
-          o.on(                  '--build-dir DIR',  'Set build directory')     { |d| conf['build_directory'] = d }
-          o.on(                  '--ignore PKG',     'Ignore package')          { |p| conf['ignores'] << p }
-          o.on(                  '--[no-]color',     'Colorize output')         { |b| conf['color']   = b }
-          o.on(                  '--[no-]confirm',   'Auto-answer prompts')     { |b| conf['confirm'] = b }
-          o.on(                  '--[no-]deps',      'Resolve dependencies')    { |b| conf['resolve'] = b }
+          o.on(                  '--build-dir DIR',  'Set build directory')     { |d| conf['build_directory'] = d            }
+          o.on(                  '--ignore PKG',     'Ignore package')          { |p| conf['ignores'] << p                   }
+          o.on(                  '--[no-]color',     'Colorize output')         { |b| conf['color']   = b ? :always : :never }
+          o.on(                  '--[no-]confirm',   'Auto-answer prompts')     { |b| conf['confirm'] = b                    }
+          o.on(                  '--[no-]deps',      'Resolve dependencies')    { |b| conf['resolve'] = b                    }
           o.on(                  '--[no-]edit',      'Edit PKGBUILDs')          { |b| conf['edit']    = b ? :always : :never }
           o.separator ''
           o.on(                  '--version',        'Show version')            { puts "raury #{VERSION}"; exit }

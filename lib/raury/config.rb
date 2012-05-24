@@ -15,7 +15,7 @@ module Raury
     CONFIG_FILE = File.join(ENV['HOME'], '.rauryrc')
 
     # default behavior
-    DEFAULTS = { 'color'      => true,
+    DEFAULTS = { 'color'      => :auto,
                  'confirm'    => true,
                  'debug'      => false,
                  'edit'       => :prompt,
@@ -27,9 +27,9 @@ module Raury
                  'development_regex' => /-(git|hg|svn|darcs|cvs|bzr)$/,
                  'makepkg_options'   => [] }
 
-    BOOLEANS = ['color', 'confirm', 'debug', 'resolve']
+    BOOLEANS = ['confirm', 'debug', 'resolve']
 
-    SYMBOLS = ['edit', 'sync_level']
+    SYMBOLS = ['color', 'edit', 'sync_level']
 
     LEVELS = { :download => [ :download                  ],
                :extract  => [ :extract, :build, :install ],
@@ -66,6 +66,15 @@ module Raury
 
     def ignore?(pkg)
       ignores.include?(pkg)
+    end
+
+    def color?
+      if color == :auto
+        return $stdout.tty?
+      end
+
+      # ensure true on misconfigured value
+      return color != :never
     end
 
     def edit?(pkg)
