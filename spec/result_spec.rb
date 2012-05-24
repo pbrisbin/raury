@@ -1,5 +1,4 @@
 require 'raury'
-require 'spec_helper'
 
 describe Raury::Result do
   before do
@@ -61,13 +60,6 @@ describe Raury::Result do
       # should sort by name
       [search_result_c, search_result_a].sort.should eq(
         [search_result_a, search_result_c])
-    end
-
-    it "displays correctly" do
-      capture_stdout { search_result.display }.chomp.should eq(%{
-aur/foo 2.2-1
-    A description
-      }.strip)
     end
   end
 end
