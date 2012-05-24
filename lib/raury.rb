@@ -27,13 +27,16 @@ module Raury
       def run!(argv)
         command, arguments = Options.parse!(argv)
 
-        debug("running #{command} #{arguments}")
+        debug_box do
+          debug("command: #{command}")
+          debug("arguments: #{arguments}")
+          debug("#{Config.config.map {|k,v| "#{k}: #{v}"}.join("\n")}")
+        end
 
         if [:search, :info].include?(command)
           Search.new(*arguments).send(command)
         else
           Dir.chdir(Config.build_directory) do
-            debug("#{command}ing in #{Config.build_directory}")
             Plan.new(arguments).send(command)
           end
         end
@@ -41,9 +44,10 @@ module Raury
       rescue => ex
         error "#{ex}"
 
-        debug('')
-        debug('-' * 80)
-        debug("call stack: #{ex.backtrace.join("\n")}")
+        debug_box do
+          debug("trace:")
+          debug("#{ex.backtrace.join("\n")}")
+        end
 
         exit 1
       end
