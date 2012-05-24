@@ -19,6 +19,8 @@ module Raury
     end
 
     def self.depends(name, build_only = false)
+      return nil if checked?(name)
+
       pkg = CGI::escape(name)
       pkgbuild = Aur.new("/packages/#{pkg.slice(0,2)}/#{pkg}/PKGBUILD").fetch
 
@@ -35,6 +37,17 @@ printf "%s\\n" "${makedepends[@]}"#{build_only ? '' : ' "${depends[@]}"'}
       end
 
       pacman_T deps
+    end
+
+    def self.checked?(name)
+      @checked ||= []
+
+      if @checked.include?(name)
+        true
+      else
+        @checked << name
+        false
+      end
     end
   end
 end
