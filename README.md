@@ -2,57 +2,62 @@
 
 Yet another simple aur helper. This one's in ruby.
 
-## Performance
+## Why?
 
 ~~~ 
-Searching for "python":
+Recursively resolving the (83) dependencies for haskell-yesod:
 
-  aurget  0.84s user 0.26s system 41% cpu 2.660 total
-  raury   0.37s user 0.05s system 23% cpu 1.754 total
+  2.70s user 3.27s system 160% cpu 3.710 total
 
-Recursively resolving the dependencies for haskell-yesod:
+Checking for available upgrades to my (54) foreign packages:
 
-  aurget  7.40s user  3.44s system 16%  cpu 1:03.920 total
-  raury   2.73s user  3.39s system 120% cpu    5.062 total
+  0.61s user 0.08s system 38% cpu 1.787 total
 
-Checking for available upgrades:
-
-  aurget  1.30s user 0.61s system 13% cpu 14.378 total
-  raury   0.63s user 0.07s system 38% cpu  1.815 total
-
-~~~
-
-## Running specs
-
-~~~ 
-$ bundle install
-$ rake
-~~~
-
-## Try it
-
-~~~ 
-$ bundle install
-$ bundle exec bin/raury --help
 ~~~
 
 ## Installation
 
 ~~~ 
+$ gem install bundler
 $ rake install
-$ raury --help
 ~~~
 
-## Project state
+## Usage
 
-Done:
+~~~ 
+usage: raury [command] [options] [arguments]
 
-1. Search/Info
-2. Download/Extract/Build/Install
-3. Process available upgrades
-4. Resolve dependencies
-5. Edit PKGBUILDs before building
-6. Config file and commandline options
-7. Pass-through makepkg options
-8. Color
-9. Handle "development" packages specially
+Commands:
+    -S, --sync                       Process packages
+    -u, --upgrade                    Upgrade packages
+    -s, --search                     Search for packages
+    -i, --info                       Show info for packages
+
+Options:
+    -d, --download                   Stop after downloading
+    -e, --extract                    Stop after extracting
+    -b, --build                      Stop after building
+    -y, --install                    Install after building
+
+        --build-dir DIR              Set build directory
+        --ignore PKG                 Ignore package
+        --[no-]color                 Colorize output
+        --[no-]confirm               Auto-answer prompts
+        --[no-]deps                  Resolve dependencies
+        --[no-]edit                  Edit PKGBUILDs
+
+        --version                    Show version
+        --debug                      Show debug output
+
+    -h, --help                       Display this screen
+
+These options can be passed to makepkg:
+
+    -c, --clean                      Clean up work files after build
+    -f, --force                      Overwrite existing package
+    -L, --log                        Log package build process
+    -r, --rmdeps                     Remove installed dependencies after a successful build
+        --asroot                     Allow makepkg to run as root user
+        --sign                       Sign the resulting package with gpg
+        --skipinteg                  Do not perform any verification checks on source files
+~~~
