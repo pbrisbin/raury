@@ -1,13 +1,13 @@
 require 'raury'
 
-describe Raury::BuildPlan do
+describe Raury::Plan do
   it "takes constructor args" do
-    bp = Raury::BuildPlan.new(['foo', 'bar'])
+    bp = Raury::Plan.new(['foo', 'bar'])
     bp.targets.should eq(['foo', 'bar'])
   end
 
   it "won't duplicate" do
-    bp = Raury::BuildPlan.new
+    bp = Raury::Plan.new
 
     bp.add_target('foo')
     bp.add_target('fab')

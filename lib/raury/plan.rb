@@ -1,5 +1,5 @@
 module Raury
-  class BuildPlan
+  class Plan
     include Prompt
     include Output
 

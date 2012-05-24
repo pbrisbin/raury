@@ -6,12 +6,12 @@ require 'raury/prompt'
 # classes
 require 'raury/aur'
 require 'raury/build'
-require 'raury/build_plan'
 require 'raury/config'
 require 'raury/depends'
 require 'raury/download'
 require 'raury/exceptions'
 require 'raury/options'
+require 'raury/plan'
 require 'raury/result'
 require 'raury/rpc'
 require 'raury/search'
@@ -34,7 +34,7 @@ module Raury
         else
           Dir.chdir(Config.build_directory) do
             debug("#{command}ing in #{Config.build_directory}")
-            BuildPlan.new(arguments).send(command)
+            Plan.new(arguments).send(command)
           end
         end
 

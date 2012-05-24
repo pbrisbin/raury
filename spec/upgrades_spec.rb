@@ -17,19 +17,19 @@ describe Raury::Upgrades do
     Raury::Rpc.should_receive(:new).with(:info, 'foo').and_return(foo_result)
     Raury::Rpc.should_receive(:new).with(:info, 'bar').and_return(bar_result)
 
-    bp = Raury::BuildPlan.new(['baz'])
-    Raury::Upgrades.add_to(bp)
+    p = Raury::Plan.new(['baz'])
+    Raury::Upgrades.add_to(p)
 
-    bp.targets.should eq(['baz'])
-    bp.results.map(&:name).should eq(['bar'])
+    p.targets.should eq(['baz'])
+    p.results.map(&:name).should eq(['bar'])
   end
 
   it "ignores development packages" do
     Raury::Upgrades.stub(:pacman_Qm).and_return([['foo-git','1.0']])
 
-    bp = Raury::BuildPlan.new
-    Raury::Upgrades.add_to(bp)
+    p = Raury::Plan.new
+    Raury::Upgrades.add_to(p)
 
-    bp.results.should eq([])
+    p.results.should eq([])
   end
 end
