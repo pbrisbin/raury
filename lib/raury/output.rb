@@ -19,7 +19,16 @@ module Raury
     end
 
     def debug(msg)
-      $stderr.print "#{black(msg)}\n" if Config.debug?
+      $stderr.print "#{black msg}\n" if Config.debug?
+    end
+
+    # note: not threadsafe
+    def debug_box(&block)
+      return unless Config.debug?
+
+      debug("\n" + '-' * 80)
+      yield
+      debug('-' * 80 + "\n")
     end
 
     def warn(msg)
