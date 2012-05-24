@@ -27,24 +27,15 @@ module Raury
       def run!(argv)
         command, arguments = Options.parse!(argv)
 
-        debug("running '#{command} #{arguments}'")
+        debug("running #{command} #{arguments}")
 
         if [:search, :info].include?(command)
-          return Search.new(*arguments).send(command)
-        end
-
-        case command
-        when :upgrade
-          plan = Upgrades.build_plan
-        when :install
-          plan = BuildPlan.new(arguments)
-          plan.resolve_dependencies! if Config.resolve?
+          Search.new(*arguments).send(command)
         else
-          raise InvalidUsage
-        end
-
-        Dir.chdir(Config.build_directory) do
-          plan.run!
+          Dir.chdir(Config.build_directory) do
+            debug("#{command}ing in #{Config.build_directory}")
+            BuildPlan.new(arguments).send(command)
+          end
         end
 
       rescue => ex
@@ -56,7 +47,6 @@ module Raury
 
         exit 1
       end
-
     end
   end
 end
