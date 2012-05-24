@@ -12,13 +12,14 @@ Searching for "python":
 
 Recursively resolving the dependencies for haskell-yesod:
 
-  aurget  7.40s user  3.44s system 16% cpu 1:03.92  total
-  raury   8.20s user 12.62s system 63% cpu   33.027 total
+  aurget  7.40s user  3.44s system 16%  cpu 1:03.920 total
+  raury   2.73s user  3.39s system 120% cpu    5.062 total
 
 Checking for available upgrades:
 
   aurget  1.30s user 0.61s system 13% cpu 14.378 total
-  raury   0.66s user 0.08s system 40% cpu  1.836 total
+  raury   0.63s user 0.07s system 38% cpu  1.815 total
+
 ~~~
 
 ## Running specs
