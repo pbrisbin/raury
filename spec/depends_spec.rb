@@ -75,6 +75,11 @@ describe Raury::Depends do
 
     Raury::Depends.satisfieds << 'sdep1'
     Raury::Depends.satisfieds << 'sdep2'
+
+    Raury::Depends.class_eval do
+      # clear the cached value
+      @checked = []
+    end
   end
 
   it "resolves dependencies recursively" do
