@@ -25,7 +25,7 @@ module Raury
     end
 
     def resolve_dependencies!
-      return unless Config.resolve?
+      return unless Config.resolve? && targets.any?
 
       puts 'resolving dependencies...'
       targets.each do |target|
@@ -34,11 +34,12 @@ module Raury
     end
 
     def fetch_results!
+      raise NoTargets if targets.empty?
+
       targets.uniq!
 
-      debug("fetching results for #{targets}")
-
       puts 'searching the AUR...'
+      debug("fetching info for #{targets}")
       results = Rpc.new(:multiinfo, *targets).call
 
       # we need the results in the reverse order of our targets (so
@@ -47,15 +48,17 @@ module Raury
       # done here is cheaper than making per-target rpc calls.
       targets.reverse.each do |target|
         if result = results.detect {|r| r.name == target}
+          debug("fetched info on #{result}")
           @results << result
         else
+          debug("#{target} not found in #{results}")
           raise NoResults.new(target)
         end
       end
     end
 
     def run!(&block)
-      raise NoTargets if results.empty?
+      raise NoResults if results.empty?
 
       puts ''
       puts "#{yellow "Targets (#{results.length}):"} #{results.map(&:to_s).join(' ')}"
@@ -94,7 +97,7 @@ module Raury
 
       run!
 
-    rescue NoTargets
+    rescue NoResults
       puts 'there is nothing to do'
       exit
     end
