@@ -25,9 +25,9 @@ describe Raury::Plan do
   end
 
   it "fetches results" do
-    results  = [Raury::Result.new(:multiinfo, {})]*2
+    results  = [Raury::Result.new(:multiinfo, {"Name" => 'bar'}), Raury::Result.new(:multiinfo, {"Name" => 'foo'})]
     callable = double("results", :call => results)
-    Raury::Rpc.should_receive(:new).with(:multiinfo, *['bar','foo']).and_return(callable)
+    Raury::Rpc.should_receive(:new).with(:multiinfo, 'foo', 'bar').and_return(callable)
 
     @it.fetch_results!
   end
@@ -35,7 +35,7 @@ describe Raury::Plan do
   it "raises no results" do
     results  = []
     callable = double("results", :call => results)
-    Raury::Rpc.should_receive(:new).with(:multiinfo, *['bar','foo']).and_return(callable)
+    Raury::Rpc.should_receive(:new).with(:multiinfo, 'foo', 'bar').and_return(callable)
 
     lambda { @it.fetch_results! }.should raise_error(Raury::NoResults)
   end

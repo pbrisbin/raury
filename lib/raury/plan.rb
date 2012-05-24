@@ -36,18 +36,21 @@ module Raury
     def fetch_results!
       targets.uniq!
 
-      debug("fetching info for #{targets}")
+      debug("fetching results for #{targets}")
 
       puts 'searching the AUR...'
-      @results = Rpc.new(:multiinfo, *targets.reverse).call
+      results = Rpc.new(:multiinfo, *targets).call
 
-      if @results.length != targets.length
-        missing = targets - @results.map(&:name)
-
-        debug("not all build targets are available.")
-        debug("#{missing.length} missing: #{missing.sort}")
-
-        raise NoResults.new(missing.first)
+      # we need the results in the reverse order of our targets (so
+      # dependencies are installed first). unfortunately, the rpc
+      # returns results alphabetically. assumption is the reordering
+      # done here is cheaper than making per-target rpc calls.
+      targets.reverse.each do |target|
+        if result = results.detect {|r| r.name == target}
+          @results << result
+        else
+          raise NoResults.new(target)
+        end
       end
     end
 
