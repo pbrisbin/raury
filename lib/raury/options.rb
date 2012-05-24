@@ -12,7 +12,7 @@ module Raury
           o.banner =  'usage: raury [command] [options] [arguments]'
           o.separator ''
           o.separator 'Commands:'
-          o.on(            '-S', '--sync',           'Process packages')        { command = :install }
+          o.on(            '-S', '--sync',           'Process packages')        { command = :sync    }
           o.on(            '-u', '--upgrade',        'Upgrade packages')        { command = :upgrade }
           o.on(            '-s', '--search',         'Search for packages')     { command = :search  }
           o.on(            '-i', '--info',           'Show info for packages')  { command = :info    }
