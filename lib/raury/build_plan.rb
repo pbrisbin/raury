@@ -3,86 +3,59 @@ module Raury
     include Prompt
     include Output
 
-    def initialize(targets = [])
-      targets.each do |t|
-        add_target(t)
-      end
+    attr_reader :targets, :results
+
+    def initialize(ts = [])
+      @targets = []
+      @results = []
+
+      # go through add_target so we can check ignores
+      ts.each { |t| add_target(t) }
     end
 
     def add_target(target)
       unless targets.include?(target)
-        if Config.ignore?(target)
-          if prompt("#{target} is ignored. Process anyway")
-            debug("adding #{target} to build_plan")
-            targets << target
-            all     << target
-          else
-            warn("skipping #{target}...")
-          end
-        else
-          debug("adding #{target} to build_plan")
+        if !Config.ignore?(target) || prompt("#{target} is ignored. Process anyway")
+          debug("adding #{target} to build plan")
           targets << target
-          all     << target
+        else
+          warn("skipping #{target}...")
         end
       end
     end
 
-    def add_incidental(incidental)
-      unless incidentals.include?(incidental)
-        debug("#{incidental} may be installed by pacman")
-        incidentals << incidental
-        all         << incidental
-      end
-    end
-
-    def targets
-      @targets ||= []
-    end
-
-    def incidentals
-      @incidentals ||= []
-    end
-
-    def all
-      @all ||= []
-    end
-
     def resolve_dependencies!
+      return unless Config.resolve?
+
       puts 'resolving dependencies...'
       targets.each do |target|
         Depends.resolve(target, self)
       end
     end
 
-    def results
-      unless @results
-        raise NoTargets if targets.uniq!.empty?
+    def fetch_results!
+      targets.uniq!
 
-        debug("fetching info for '#{targets.join(', ')}'")
-        @results = Rpc.new(:multiinfo, *targets.reverse).call
+      debug("fetching info for #{targets}")
 
-        if @results.length != targets.length
-          missing = targets - @results.map(&:name)
-
-          debug("not all build targets are available.")
-          debug("#{missing.length} missing: #{missing.sort}")
-
-          raise NoResults.new(missing.first)
-        end
-      end
-
-      @results
-    end
-
-    # used only in upgrades where we have all the results from the
-    # version check.
-    def set_results(results)
-      @results = results
-    end
-
-    def run!
       puts 'searching the AUR...'
-      puts '', "#{yellow "Targets (#{results.length}):"} #{results.map(&:to_s).join(' ')}"
+      @results = Rpc.new(:multiinfo, *targets.reverse).call
+
+      if @results.length != targets.length
+        missing = targets - @results.map(&:name)
+
+        debug("not all build targets are available.")
+        debug("#{missing.length} missing: #{missing.sort}")
+
+        raise NoResults.new(missing.first)
+      end
+    end
+
+    def run!(&block)
+      raise NoTargets if results.empty?
+
+      puts ''
+      puts "#{yellow "Targets (#{results.length}):"} #{results.map(&:to_s).join(' ')}"
 
       return unless prompt('Proceed with installation')
 
@@ -102,6 +75,25 @@ module Raury
         debug("building #{result}")
         Build.new(result.name).build
       end
+    end
+
+    def sync(run = true)
+      resolve_dependencies!
+      fetch_results!
+
+      run! if run
+    end
+
+    def upgrade
+      sync(false) if targets.any?
+
+      Upgrades.add_to(self)
+
+      run!
+
+    rescue NoTargets
+      puts 'there is nothing to do'
+      exit
     end
   end
 end
