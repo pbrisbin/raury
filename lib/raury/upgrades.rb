@@ -4,7 +4,7 @@ module Raury
       include Output
       include Pacman
 
-      def build_plan
+      def add_to(plan)
         local_results = []
 
         pacman_Qm.each do |name,version|
@@ -15,10 +15,9 @@ module Raury
           end
         end
 
-        results = []
-        threads = []
-
         if local_results.any?
+          threads = []
+
           local_results.each do |local_result|
             threads << Thread.new do
               debug("fetching info for #{local_result}")
@@ -26,21 +25,12 @@ module Raury
 
               if result && Vercmp.new(result.version) > Vercmp.new(local_result.version)
                 debug("available upgrade #{local_result} => #{result}")
-                results << result
+                plan.results << result
               end
             end
           end
 
           threads.map(&:join)
-        end
-
-        if results.empty?
-          puts 'there is nothing to do'
-          exit
-        end
-
-        BuildPlan.new.tap do |bp|
-          bp.set_results(results.sort)
         end
       end
     end
