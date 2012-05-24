@@ -5,16 +5,17 @@ module Raury
     extend Pacman
 
     def self.resolve(name, bp)
-      deps = depends(name, Config.sync_level == :build)
-      deps ? bp.add_target(name) : bp.add_incidental(name)
+      if deps = depends(name, Config.sync_level == :build)
+        bp.add_target(name)
 
-      return if !deps || deps.empty?
-
-      [].tap do |ts|
-        (deps - bp.all).each do |dep|
-          ts << Thread.new { resolve(dep, bp) }
+        if deps.any?
+          [].tap do |ts|
+            (deps - bp.targets).each do |dep|
+              ts << Thread.new { resolve(dep, bp) }
+            end
+          end.map(&:join)
         end
-      end.map(&:join)
+      end
     end
 
     def self.depends(name, build_only = false)

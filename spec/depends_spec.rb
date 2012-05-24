@@ -80,8 +80,6 @@ describe Raury::Depends do
   it "resolves dependencies recursively" do
     bp = Raury::BuildPlan.new.tap { |bp| Raury::Depends.resolve('pkg', bp) }
 
-    bp.incidentals.should eq(['pdep1'])
-
     # each level should be in the correct (reverse-install) order, but
     # the order within the levels is non-deterministic.
     targets = bp.targets.uniq.reverse
@@ -97,7 +95,6 @@ describe Raury::Depends do
 
     bp = Raury::BuildPlan.new.tap { |bp| Raury::Depends.resolve('pkg', bp) }
 
-    bp.incidentals.should eq([])
     bp.targets.uniq.sort.should eq(['pkg', 'mdep1'].sort)
   end
 end
