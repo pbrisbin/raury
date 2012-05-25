@@ -5,7 +5,7 @@ module Raury
       # feed the pkgbuild through bash. obviously this comes with all
       # the risks of sourcing an unviewed PKGBUILD. however, it's the
       # only way to be 100% accurate.
-      def source!(pkgbuild, build_only)
+      def source!(pkgbuild, build_only = false)
         IO.popen('bash', 'r+') do |h|
           h.write(%{
 #{pkgbuild}
