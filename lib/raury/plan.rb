@@ -39,7 +39,6 @@ module Raury
       targets.uniq!
 
       puts 'searching the AUR...'
-      debug("fetching info for #{targets}")
       results = Rpc.new(:multiinfo, *targets).call
 
       # we need the results in the reverse order of our targets (so
@@ -48,17 +47,20 @@ module Raury
       # done here is cheaper than making per-target rpc calls.
       targets.reverse.each do |target|
         if result = results.detect {|r| r.name == target}
-          debug("fetched info on #{result}")
           @results << result
         else
-          debug("#{target} not found in #{results}")
           raise NoResults.new(target)
         end
       end
     end
 
     def run!(&block)
-      raise NoResults if results.empty?
+      if results.empty?
+        # the only way we get here without having raised NoTargets is if
+        # we're checking for upgrades and there were none.
+        puts 'there is nothing to do'
+        exit
+      end
 
       puts ''
       puts "#{yellow "Targets (#{results.length}):"} #{results.map(&:to_s).join(' ')}"
@@ -67,10 +69,8 @@ module Raury
 
       results.each do |result|
         if Config.download?
-          debug("downloading #{result}")
           Download.new(result).download
         else
-          debug("extracting #{result}")
           Download.new(result).extract
         end
       end
@@ -78,28 +78,26 @@ module Raury
       return unless Config.build?
 
       results.each do |result|
-        debug("building #{result}")
         Build.new(result.name).build
       end
     end
 
-    def sync(run = true)
+    def sync
       resolve_dependencies!
       fetch_results!
 
-      run! if run
+      run!
     end
 
     def upgrade
-      sync(false) if targets.any?
+      if targets.any?
+        resolve_dependencies!
+        fetch_results!
+      end
 
       Upgrades.add_to(self)
 
       run!
-
-    rescue NoResults
-      puts 'there is nothing to do'
-      exit
     end
   end
 end

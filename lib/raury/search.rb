@@ -7,7 +7,7 @@ module Raury
     end
 
     def search
-      debug("searching for '#{@arguments.join(' ')}'")
+      debug("calling search for '#{@arguments.join(' ')}'")
       results = Rpc.new(:search, *@arguments).call
       results.map(&:display)
 
@@ -17,14 +17,12 @@ module Raury
     end
 
     def info
-      debug("fetching info for '#{@arguments.join(', ')}")
+      debug("calling multiinfo for #{@arguments}")
       results = Rpc.new(:multiinfo, *@arguments).call
       results.map(&:display)
 
       if results.length != @arguments.length
         @arguments = @arguments - results.map(&:name)
-
-        debug("results were not found for '#{@arguments.join(', ')}'")
         raise NoResults.new(@arguments.first)
       end
 

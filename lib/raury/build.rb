@@ -15,6 +15,7 @@ module Raury
       options << '-s' if Config.resolve?
       options << '-i' if Config.install?
 
+      debug("building #{@package}")
       Dir.chdir(@package) do
         raise Errno::ENOENT unless File.exists?('PKGBUILD')
 

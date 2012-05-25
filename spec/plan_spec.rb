@@ -41,9 +41,9 @@ describe Raury::Plan do
   end
 
   it "should raise on no targets" do
-    @it.stub(:results).and_return([])
+    @it.stub(:targets).and_return([])
 
-    lambda { @it.run! }.should raise_error(Raury::NoTargets)
+    lambda { @it.fetch_results! }.should raise_error(Raury::NoTargets)
   end
 
   it "should download when downloading" do
