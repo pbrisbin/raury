@@ -66,7 +66,7 @@ module Raury
 
     # prompt the user with the results that we'll process, when
     # confirmed, processes the results as per the current configuration.
-    def run!(&block)
+    def run!
       if results.empty?
         # the only way we get here without having raised NoTargets is if
         # we're checking for upgrades and there were none.
