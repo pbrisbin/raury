@@ -20,12 +20,8 @@ module Raury
       end
     end
 
-    # download a PKGBUILD directly to a bash process which outputs the
-    # (make)depends arrays one item per line. returns nil if the
-    # PKGBUILD is not found.
-    #
-    # *use --no-deps if this makes you nervous*
-    #
+    # retrieve the (make)depends for a package by either sourcing or
+    # parsing its PKGBUILD depending on current configuration.
     def self.depends(name, build_only = false)
       return nil if checked?(name)
 
@@ -34,15 +30,11 @@ module Raury
 
       return nil if pkgbuild =~ /not found/i
 
-      deps = IO.popen('bash', 'r+') do |h|
-        h.write(%{
-#{pkgbuild}
-printf "%s\\n" "${makedepends[@]}"#{build_only ? '' : ' "${depends[@]}"'}
-        })
-
-        h.close_write
-        h.read.split("\n")
-      end
+      deps = if Config.source?
+               Parser.source!(pkgbuild, build_only)
+             else
+               Parser.parse!(pkgbuild, build_only)
+             end
 
       pacman_T deps
     end

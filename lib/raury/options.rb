@@ -31,6 +31,7 @@ module Raury
           o.on(                  '--[no-]confirm',   'Auto-answer prompts')     { |b| conf['confirm'] = b                    }
           o.on(                  '--[no-]deps',      'Resolve dependencies')    { |b| conf['resolve'] = b                    }
           o.on(                  '--[no-]edit',      'Edit PKGBUILDs')          { |b| conf['edit']    = b ? :always : :never }
+          o.on(                  '--[no-]source',    'Source for dependencies') { |b| conf['source']  = b                    }
           o.separator ''
           o.on(                  '--version',        'Show version')            { puts "raury #{VERSION}"; exit }
           o.on(                  '--debug',          'Show debug output')       { conf['debug'] = true }

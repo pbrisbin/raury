@@ -22,13 +22,14 @@ module Raury
                  'editor'     => ENV['EDITOR'] || 'vim',
                  'ignores'    => [],
                  'resolve'    => false,
+                 'source'     => true,
                  'sync_level' => :install,
                  'build_directory'   => ENV['HOME'],
                  'development_regex' => /-(git|hg|svn|darcs|cvs|bzr)$/,
                  'makepkg_options'   => [] }
 
     # settings which should have query methods
-    BOOLEANS = ['confirm', 'debug', 'resolve']
+    BOOLEANS = ['confirm', 'debug', 'resolve', 'source']
 
     # settings which should be symbols
     SYMBOLS = ['color', 'edit', 'sync_level']
