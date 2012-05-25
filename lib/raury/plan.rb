@@ -1,4 +1,7 @@
 module Raury
+  # Holds the targets for the current build. Adds additional targets if
+  # found as dependencies, confirms targets are available and executes
+  # the download/build/install as needed.
   class Plan
     include Prompt
     include Output
@@ -13,6 +16,8 @@ module Raury
       ts.each { |t| add_target(t) }
     end
 
+    # add a target to the plan, checks if we're configured to ingore it
+    # first.
     def add_target(target)
       unless targets.include?(target)
         if !Config.ignore?(target) || prompt("#{target} is ignored. Process anyway")
@@ -24,6 +29,8 @@ module Raury
       end
     end
 
+    # add any dependencies for the current targets list as additional
+    # targets.
     def resolve_dependencies!
       return unless Config.resolve? && targets.any?
 
@@ -33,6 +40,9 @@ module Raury
       end
     end
 
+    # creates an array of aur results which can be downloaded and built.
+    # raises appropriate errors if we've got no targets to process or
+    # any of our targets are unavailable.
     def fetch_results!
       raise NoTargets if targets.empty?
 
@@ -54,6 +64,8 @@ module Raury
       end
     end
 
+    # prompt the user with the results that we'll process, when
+    # confirmed, processes the results as per the current configuration.
     def run!(&block)
       if results.empty?
         # the only way we get here without having raised NoTargets is if
@@ -82,6 +94,7 @@ module Raury
       end
     end
 
+    # process targets
     def sync
       resolve_dependencies!
       fetch_results!
@@ -89,6 +102,8 @@ module Raury
       run!
     end
 
+    # process targets if present, add any available upgrades and process
+    # those as well.
     def upgrade
       if targets.any?
         resolve_dependencies!

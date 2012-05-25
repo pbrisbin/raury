@@ -16,6 +16,8 @@ module Raury
       @rpc  = Aur.new("/rpc.php?type=#{type}#{args_str}")
     end
 
+    # fetch and parse the resource as JSON, return the values wrapped in
+    # a Result instance.
     def call
       json = JSON.parse(@rpc.fetch)
       type = json['type']

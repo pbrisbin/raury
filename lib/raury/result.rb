@@ -55,6 +55,7 @@ module Raury
       @type, @hsh = type, hsh
     end
 
+    # results are compared by name
     def ==(other)
       name == other.name
     end
@@ -63,6 +64,7 @@ module Raury
       name <=> other.name
     end
 
+    # outputs results depending on type (search or info)
     def display
       if type == :search
         puts "#{magenta 'aur'}/#{white name} #{green version}#{out_of_date ? red(' [out of date]') : ''}",

@@ -1,4 +1,6 @@
 module Raury
+  # Handles the calls to your editor and makepkg. Adds appropriate
+  # options based on configuration.
   class Build
     include Prompt
     include Output

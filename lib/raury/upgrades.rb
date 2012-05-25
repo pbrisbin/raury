@@ -1,9 +1,11 @@
 module Raury
+  # Find available upgrades to foreign packages.
   class Upgrades
     class << self
       include Output
       include Pacman
 
+      # add available upgrades to the build plan as additional results.
       def add_to(plan)
         local_results = []
 

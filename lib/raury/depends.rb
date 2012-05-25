@@ -1,9 +1,11 @@
 require 'cgi'
 
 module Raury
+  # Recursively resolve dependencies.
   class Depends
     extend Pacman
 
+    # resolve for name and add additional targets to the build plan.
     def self.resolve(name, bp)
       if deps = depends(name, Config.sync_level == :build)
         bp.add_target(name)
@@ -18,6 +20,12 @@ module Raury
       end
     end
 
+    # download a PKGBUILD directly to a bash process which outputs the
+    # (make)depends arrays one item per line. returns nil if the
+    # PKGBUILD is not found.
+    #
+    # *use --no-deps if this makes you nervous*
+    #
     def self.depends(name, build_only = false)
       return nil if checked?(name)
 
@@ -39,6 +47,8 @@ printf "%s\\n" "${makedepends[@]}"#{build_only ? '' : ' "${depends[@]}"'}
       pacman_T deps
     end
 
+    # holds values we've already checked so we don't repeatedly check
+    # them in cases where dependencies are shared.
     def self.checked?(name)
       @checked ||= []
 

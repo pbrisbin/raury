@@ -1,4 +1,5 @@
 module Raury
+  # Downloads taurballs for search results.
   class Download
     include Output
 

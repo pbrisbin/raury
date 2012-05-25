@@ -26,11 +26,12 @@ module Raury
       @pkg = pkg
     end
 
-    # subclass should override
+    # subclass should override this with something meaningful
     def msg
       'error processing'
     end
 
+    # "<pkg>: <msg>"
     def to_s
       "#{@pkg}: #{msg}."
     end

@@ -27,10 +27,13 @@ module Raury
                  'development_regex' => /-(git|hg|svn|darcs|cvs|bzr)$/,
                  'makepkg_options'   => [] }
 
+    # settings which should have query methods
     BOOLEANS = ['confirm', 'debug', 'resolve']
 
+    # settings which should be symbols
     SYMBOLS = ['color', 'edit', 'sync_level']
 
+    # actions which occur at given sync_levels
     LEVELS = { :download => [ :download                  ],
                :extract  => [ :extract, :build, :install ],
                :build    => [           :build, :install ],
@@ -45,29 +48,30 @@ module Raury
       end
     end
 
-    # add query methods for boolean settings
     BOOLEANS.each do |key|
       class_eval %[ def #{key}?; #{key} end ]
     end
 
-    # cast some options to symbols
     SYMBOLS.each do |key|
       class_eval %[ def #{key}; config['#{key}'].to_sym end ]
     end
 
-    # add query methods around sync level
     LEVELS.each do |meth,levels|
       class_eval %[ def #{meth}?; #{levels}.include?(sync_level) end ]
     end
 
+    # configured build directory path expanded
     def build_directory
       File.expand_path(config['build_directory'])
     end
 
+    # is the package included in our ingores?
     def ignore?(pkg)
       ignores.include?(pkg)
     end
 
+    # if color is auto, check if we're connected to a tty, otherwise
+    # return true/false based on settings (always/never).
     def color?
       if color == :auto
         return $stdout.tty?
@@ -77,6 +81,8 @@ module Raury
       return color != :never
     end
 
+    # if edit is prompt, prompt, otherwise return true/false based on
+    # settings (always/never).
     def edit?(pkg)
       if edit == :prompt
         return prompt("Edit PKGBUILD for #{pkg}")
@@ -86,6 +92,8 @@ module Raury
       return edit != :never
     end
 
+    # lazy-load the defaults hash merged with your yaml configuration
+    # when present.
     def config
       unless @config
         if yaml = YAML::load(File.open(CONFIG_FILE)) rescue nil

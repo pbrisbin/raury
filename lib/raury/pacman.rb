@@ -1,4 +1,5 @@
 module Raury
+  # Provides a small abstraction layer of pacman commands.
   module Pacman
     VERSION_REGEX = /(==?|>=|<=).*$/
 

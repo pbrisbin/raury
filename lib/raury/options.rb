@@ -1,9 +1,11 @@
 require 'optparse'
 
 module Raury
+  # OptionParser wrapper
   class Options
     class << self
-
+      # returns [command, arguments]. adjusts the configuration based on
+      # other options.
       def parse!(argv)
         command = nil
         conf    = Config.config

@@ -1,4 +1,5 @@
 module Raury
+  # Executes the search and info commands.
   class Search
     include Output
 

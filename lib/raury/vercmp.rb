@@ -1,4 +1,5 @@
 module Raury
+  # An accurate port of pacman's vercmp.c
   class Vercmp
     include Comparable
 
