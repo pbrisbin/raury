@@ -51,6 +51,7 @@ Options:
         --[no-]confirm               Auto-answer prompts
         --[no-]deps                  Resolve dependencies
         --[no-]edit                  Edit PKGBUILDs
+        --[no-]source                Source for dependencies
 
         --version                    Show version
         --debug                      Show debug output
@@ -66,6 +67,7 @@ These options can be passed to makepkg:
         --asroot                     Allow makepkg to run as root user
         --sign                       Sign the resulting package with gpg
         --skipinteg                  Do not perform any verification checks on source files
+
 ~~~
 
 ## Running Specs
