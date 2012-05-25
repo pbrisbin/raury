@@ -15,10 +15,16 @@ Checking for available upgrades to my (54) foreign packages:
 
 ~~~
 
-## Installation
+## Dependencies
 
 ~~~ 
 $ gem install bundler
+$ bundle install
+~~~
+
+## Installation
+
+~~~ 
 $ rake install
 ~~~
 
@@ -61,3 +67,18 @@ These options can be passed to makepkg:
         --sign                       Sign the resulting package with gpg
         --skipinteg                  Do not perform any verification checks on source files
 ~~~
+
+## Running Specs
+
+~~~ 
+$ rake
+~~~
+
+## Viewing Docs
+
+~~~ 
+$ rake rdoc
+$ $BROWSER ./doc/index.html
+~~~
+
+Also available [here](http://pbrisbin.com/static/docs/ruby/raury/).
