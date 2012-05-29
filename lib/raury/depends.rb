@@ -6,6 +6,7 @@ module Raury
     class << self
       include Pacman
       include Output
+      include Threads
 
       # resolve for name and add additional targets to the build plan.
       def resolve(name, bp)
@@ -13,11 +14,9 @@ module Raury
           bp.add_target(name)
 
           if deps.any?
-            [].tap do |ts|
-              (deps - bp.targets).each do |dep|
-                ts << Thread.new { resolve(dep, bp) }
-              end
-            end.map(&:join)
+            each_threaded(deps - bp.targets) do |dep|
+              resolve(dep, bp)
+            end
           end
         end
       end

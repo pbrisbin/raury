@@ -2,6 +2,7 @@
 require 'raury/output'
 require 'raury/pacman'
 require 'raury/prompt'
+require 'raury/threads'
 
 # classes
 require 'raury/aur'

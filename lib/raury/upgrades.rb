@@ -4,6 +4,7 @@ module Raury
     class << self
       include Output
       include Pacman
+      include Threads
 
       # add available upgrades to the build plan as additional results.
       def add_to(plan)
@@ -18,21 +19,15 @@ module Raury
         end
 
         if local_results.any?
-          threads = []
+          each_threaded(local_results) do |local_result|
+            debug("checking available version for #{local_result}")
+            result = Rpc.new(:info, local_result.name).call rescue nil
 
-          local_results.each do |local_result|
-            threads << Thread.new do
-              debug("checking available version for #{local_result}")
-              result = Rpc.new(:info, local_result.name).call rescue nil
-
-              if result && Vercmp.new(result.version) > Vercmp.new(local_result.version)
-                debug("upgrade available: #{local_result} => #{result}")
-                plan.results << result
-              end
+            if result && Vercmp.new(result.version) > Vercmp.new(local_result.version)
+              debug("upgrade available: #{local_result} => #{result}")
+              plan.results << result
             end
           end
-
-          threads.map(&:join)
         end
       end
     end

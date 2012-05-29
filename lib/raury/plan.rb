@@ -5,6 +5,7 @@ module Raury
   class Plan
     include Prompt
     include Output
+    include Threads
 
     attr_reader :targets, :results
 
@@ -35,7 +36,7 @@ module Raury
       return unless Config.resolve? && targets.any?
 
       puts 'resolving dependencies...'
-      targets.each do |target|
+      each_threaded(targets) do |target|
         Depends.resolve(target, self)
       end
     end
