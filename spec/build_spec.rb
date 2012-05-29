@@ -34,6 +34,15 @@ describe Raury::Build do
     b.build
   end
 
+  it "should ask about editing" do
+    Raury::Config.stub(:edit?).and_return(true)
+
+    b = Raury::Build.new('aurget')
+    b.should_receive(:system).with("#{Raury::Config.editor} 'PKGBUILD'").and_return(true)
+    b.stub(:prompt).and_return(false) # so we don't continue
+    b.build
+  end
+
   it "should raise when not extracted" do
     Dir.stub(:chdir).and_raise(Errno::ENOENT)
 
@@ -44,5 +53,22 @@ describe Raury::Build do
     File.stub(:exists?).and_return(false)
 
     lambda { Raury::Build.new('aurget').build }.should raise_error(Raury::NoPkgbuild)
+  end
+
+  it "should raise when makepkg fails" do
+    b = Raury::Build.new('aurget')
+    b.should_receive(:system).with('makepkg', '-i').and_return(false)
+
+    lambda { b.build }.should raise_error(Raury::BuildError)
+  end
+
+  it "should raise when editor fails" do
+    Raury::Config.stub(:edit?).and_return(true)
+
+    b = Raury::Build.new('aurget')
+    b.should_receive(:system).with("#{Raury::Config.editor} 'PKGBUILD'").and_return(false)
+
+    lambda { b.build }.should raise_error(Raury::EditError)
+
   end
 end
