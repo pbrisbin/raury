@@ -4,6 +4,7 @@ describe Raury::Aur do
   it "delegates to Net::HTTP and uses https" do
     resp = double("resp")
     resp.stub(:body).and_return('foo')
+    resp.stub(:kind_of?).and_return(true)
 
     http = double("http")
     http.should_receive(:use_ssl=).with(true)
@@ -13,5 +14,17 @@ describe Raury::Aur do
 
     aur = Raury::Aur.new("/foo")
     aur.fetch.should eq("foo")
+  end
+
+  it "raises network error when non-success" do
+    resp = double("resp")
+    resp.stub(:kind_of?).and_return(false)
+
+    http = double("http")
+    http.stub(:request_get).and_return(resp)
+
+    Net::HTTP.stub(:new).and_return(http)
+
+    lambda { Raury::Aur.new("/").fetch }.should raise_error(Raury::NetworkError)
   end
 end

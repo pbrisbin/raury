@@ -14,7 +14,13 @@ module Raury
     def fetch
       http = Net::HTTP.new(@uri.host, 443)
       http.use_ssl = true
-      http.request_get("#{@uri.path}?#{@uri.query}").body
+      resp = http.request_get("#{@uri.path}?#{@uri.query}")
+
+      unless resp.kind_of?(Net::HTTPSuccess)
+        raise "response not successfull: #{resp.code}"
+      end
+
+      resp.body
 
     rescue Exception => ex
       raise NetworkError.new(ex)

@@ -3,52 +3,58 @@ require 'cgi'
 module Raury
   # Recursively resolve dependencies.
   class Depends
-    extend Pacman
+    class << self
+      include Pacman
+      include Output
 
-    # resolve for name and add additional targets to the build plan.
-    def self.resolve(name, bp)
-      if deps = depends(name, Config.sync_level == :build)
-        bp.add_target(name)
+      # resolve for name and add additional targets to the build plan.
+      def resolve(name, bp)
+        if deps = depends(name, Config.sync_level == :build)
+          bp.add_target(name)
 
-        if deps.any?
-          [].tap do |ts|
-            (deps - bp.targets).each do |dep|
-              ts << Thread.new { resolve(dep, bp) }
-            end
-          end.map(&:join)
+          if deps.any?
+            [].tap do |ts|
+              (deps - bp.targets).each do |dep|
+                ts << Thread.new { resolve(dep, bp) }
+              end
+            end.map(&:join)
+          end
         end
       end
-    end
 
-    # retrieve the (make)depends for a package by either sourcing or
-    # parsing its PKGBUILD depending on current configuration.
-    def self.depends(name, build_only = false)
-      return nil if checked?(name)
+      # retrieve the (make)depends for a package by either sourcing or
+      # parsing its PKGBUILD depending on current configuration.
+      def depends(name, build_only = false)
+        return nil if checked?(name)
 
-      pkg = CGI::escape(name)
-      pkgbuild = Aur.new("/packages/#{pkg.slice(0,2)}/#{pkg}/PKGBUILD").fetch
+        pkg = CGI::escape(name)
+        pkgbuild = Aur.new("/packages/#{pkg.slice(0,2)}/#{pkg}/PKGBUILD").fetch
 
-      return nil if pkgbuild =~ /not found/i
+        deps = if Config.source?
+                 Parser.source!(pkgbuild, build_only)
+               else
+                 Parser.parse!(pkgbuild, build_only)
+               end
 
-      deps = if Config.source?
-               Parser.source!(pkgbuild, build_only)
-             else
-               Parser.parse!(pkgbuild, build_only)
-             end
+        pacman_T deps
 
-      pacman_T deps
-    end
+      rescue NetworkError => ex
+        debug("#{name}, nework error: #{ex}")
 
-    # holds values we've already checked so we don't repeatedly check
-    # them in cases where dependencies are shared.
-    def self.checked?(name)
-      @checked ||= []
+        nil
+      end
 
-      if @checked.include?(name)
-        true
-      else
-        @checked << name
-        false
+      # holds values we've already checked so we don't repeatedly check
+      # them in cases where dependencies are shared.
+      def checked?(name)
+        @checked ||= []
+
+        if @checked.include?(name)
+          true
+        else
+          @checked << name
+          false
+        end
       end
     end
   end
