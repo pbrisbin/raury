@@ -6,12 +6,15 @@ module Raury
       # the risks of sourcing an unviewed PKGBUILD. however, it's the
       # only way to be 100% accurate.
       def source!(pkgbuild, build_only = false)
-        IO.popen('bash', 'r+') do |h|
-          h.write(%{
-#{pkgbuild}
-printf "%s\\n" "${makedepends[@]}"#{build_only ? '' : ' "${depends[@]}"'}
-          })
+        # add a printf line to the script to output the (make)depends in
+        # a parsable away (one per line)
+        pkgbuild += "\n"
+        pkgbuild += 'printf "%s\n" "${makedepends[@]}" '
+        pkgbuild += '              "${depends[@]}"     '.strip unless build_only
+        pkgbuild += "\n"
 
+        IO.popen('bash', 'r+') do |h|
+          h.write(pkgbuild)
           h.close_write
           h.read.split("\n")
         end
