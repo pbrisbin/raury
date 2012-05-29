@@ -36,10 +36,9 @@ describe Raury::Depends do
       ]
     end
 
-    # TODO: we need fetch to raise when given this argument. for the
-    # time being, we'll let it fall through to original_fetch which does
-    # use network but returns nil as our scenario calls for.
-    #Raury::Aur.responses['/packages/pd/pdep1/PKGBUILD'] = "Not found"
+    Raury::Aur.responses['/packages/pd/pdep1/PKGBUILD'] = lambda do
+      raise Raury::NetworkError.new('not found')
+    end
 
     Raury::Depends.satisfieds << 'sdep1'
     Raury::Depends.satisfieds << 'sdep2'

@@ -18,25 +18,22 @@ module Raury
       @satisfieds ||= []
     end
   end
-end
 
-module Raury
   class Aur
     alias_method :original_fetch, :fetch
-    alias_method :original_initialize, :initialize
 
-    def initialize(path)
-      @path = path
-
-      original_initialize(path)
-    end
-
+    # return hardcoded responses. if response is a lambda, call it
+    # (allows simulating exceptions); otherwise, return it. falls back
+    # to original_fetch if no response is hardcoded.
     def fetch
-      self.class.responses[@path] || original_fetch
+      if r = self.class.responses[@uri.path]
+        return r.respond_to?(:call) ? r.call : r
+      end
+
+      original_fetch
     end
 
-    # add values to this array by relative path, they will be returned
-    # before falling back the original fetch method.
+    # hardcode response by adding to this hash, keyed by path.
     def self.responses
       @responses ||= {}
     end
