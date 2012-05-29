@@ -84,3 +84,10 @@ $ $BROWSER ./doc/index.html
 ~~~
 
 Also available [here](http://pbrisbin.com/static/docs/ruby/raury/).
+
+## Viewing Coverage
+
+~~~ 
+$ rake
+$ $BROWSER ./coverage/index.html
+~~~
