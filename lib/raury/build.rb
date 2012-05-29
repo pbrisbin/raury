@@ -17,6 +17,11 @@ module Raury
       options << '-s' if Config.resolve?
       options << '-i' if Config.install?
 
+      if Config.keep_devels? && (r = Config.development_regex) && @package =~ r
+        debug("#{@package} is development, removing any --clean option")
+        options.delete('-c')
+      end
+
       debug("building #{@package}")
       Dir.chdir(@package) do
         raise Errno::ENOENT unless File.exists?('PKGBUILD')

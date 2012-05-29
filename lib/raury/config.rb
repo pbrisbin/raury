@@ -26,10 +26,11 @@ module Raury
                  'sync_level' => :install,
                  'build_directory'   => ENV['HOME'],
                  'development_regex' => /-(git|hg|svn|darcs|cvs|bzr)$/,
+                 'keep_devels'       => false,
                  'makepkg_options'   => [] }
 
     # settings which should have query methods
-    BOOLEANS = ['confirm', 'debug', 'resolve', 'source']
+    BOOLEANS = ['confirm', 'debug', 'resolve', 'source', 'keep_devels']
 
     # settings which should be symbols
     SYMBOLS = ['color', 'edit', 'sync_level']
