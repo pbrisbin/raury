@@ -17,6 +17,15 @@ describe Raury::Plan do
     @it.targets.should eq(['foo','bar','fab'])
   end
 
+  it "skips ignores" do
+    Raury::Config.stub(:ignore?).and_return(true)
+
+    @it.stub(:prompt).and_return(false) # mimic user says no!
+    @it.should_receive(:warn) # warn about skipping
+
+    @it.add_target('something')
+  end
+
   it "resolves dependencies" do
     @it = Raury::Plan.new(['foo'])
 
@@ -83,5 +92,47 @@ describe Raury::Plan do
     Raury::Build.should_receive(:new).with('foo').and_return(binstance)
 
     @it.run!
+  end
+
+  it "should report nothing to do when no updates are found" do
+    Raury::Upgrades.stub(:pacman_Qm).and_return([])
+
+    p = Raury::Plan.new
+    Raury::Upgrades.add_to(p)
+
+    p.should_receive(:puts).with("there is nothing to do")
+
+    begin
+      p.run!
+    rescue SystemExit
+    end
+  end
+
+  it "should sync correctly" do
+    @it.should_receive(:resolve_dependencies!)
+    @it.should_receive(:fetch_results!)
+    @it.should_receive(:run!)
+
+    @it.sync
+  end
+
+  it "should upgrade correctly with no targets" do
+    @it.stub(:targets).and_return([])
+
+    @it.should_receive(:run!)
+    Raury::Upgrades.should_receive(:add_to).with(@it)
+
+    @it.upgrade
+  end
+
+  it "should upgrade correctly with targets" do
+    @it.stub(:targets).and_return(['foo', 'bar'])
+
+    @it.should_receive(:resolve_dependencies!)
+    @it.should_receive(:fetch_results!)
+    @it.should_receive(:run!)
+    Raury::Upgrades.should_receive(:add_to).with(@it)
+
+    @it.upgrade
   end
 end
