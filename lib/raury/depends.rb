@@ -38,7 +38,7 @@ module Raury
         pacman_T deps
 
       rescue NetworkError => ex
-        debug("#{name}, nework error: #{ex}")
+        debug("#{name}, network error: #{ex}")
 
         nil
       end
