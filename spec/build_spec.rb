@@ -1,4 +1,4 @@
-require 'raury'
+require 'spec_helper'
 
 describe Raury::Build do
   before do

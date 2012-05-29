@@ -1,4 +1,4 @@
-require 'raury'
+require 'spec_helper'
 
 describe Raury::Download do
   it "should download a taurball" do

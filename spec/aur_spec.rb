@@ -1,4 +1,4 @@
-require 'raury'
+require 'spec_helper'
 
 describe Raury::Aur do
   it "delegates to Net::HTTP and uses https" do

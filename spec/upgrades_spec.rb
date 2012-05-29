@@ -1,4 +1,4 @@
-require 'raury'
+require 'spec_helper'
 
 describe Raury::Upgrades do
   it "finds available upgrades" do

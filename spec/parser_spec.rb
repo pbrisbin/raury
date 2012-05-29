@@ -1,4 +1,4 @@
-require 'raury'
+require 'spec_helper'
 
 describe Raury::Parser do
   def build_pkgbuild(deps_str, mdeps_str)

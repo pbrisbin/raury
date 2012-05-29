@@ -1,4 +1,4 @@
-require 'raury'
+require 'spec_helper'
 
 describe Raury::Rpc, '#new' do
   it "raises invalid usage on bad search type" do

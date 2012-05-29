@@ -1,39 +1,4 @@
-require 'raury'
-
-module Raury
-  class Depends
-    def self.pacman_T(deps)
-      deps - satisfieds
-    end
-
-    def self.satisfieds
-      @satisfieds ||= []
-    end
-  end
-end
-
-module Raury
-  class Aur
-    # we're going to mock this stuff in a way that falls back to
-    # original behavior for tests that run after us.
-    alias_method :original_fetch, :fetch
-    alias_method :original_initialize, :initialize
-
-    def initialize(path)
-      @path = path
-
-      original_initialize(path)
-    end
-
-    def fetch
-      self.class.responses[@path] || original_fetch
-    end
-
-    def self.responses
-      @responses ||= {}
-    end
-  end
-end
+require 'spec_helper'
 
 describe Raury::Depends do
   before do

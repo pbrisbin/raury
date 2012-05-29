@@ -1,4 +1,4 @@
-require 'raury'
+require 'spec_helper'
 
 describe Raury::Vercmp do
   [ # pacman/test/utils/vercmptest.sh
