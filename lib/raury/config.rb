@@ -94,6 +94,15 @@ module Raury
       return edit != :never
     end
 
+    # check package against development regex, if it exists
+    def development_pkg?(pkg)
+      if (r = development_regex) && pkg =~ r
+        return true
+      end
+
+      false
+    end
+
     # lazy-load the defaults hash merged with your yaml configuration
     # when present.
     def config

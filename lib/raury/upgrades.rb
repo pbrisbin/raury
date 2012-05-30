@@ -11,7 +11,7 @@ module Raury
         local_results = []
 
         pacman_Qm.each do |name,version|
-          if (r = Config.development_regex) && name =~ r
+          if Config.development_pkg?(name)
             debug("ignoring #{name} due to development regex")
           else
             local_results << Result.new(:info, {"Name" => name, "Version" => version})

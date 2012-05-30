@@ -17,7 +17,7 @@ module Raury
       options << '-s' if Config.resolve?
       options << '-i' if Config.install?
 
-      if Config.keep_devels? && (r = Config.development_regex) && @package =~ r
+      if Config.keep_devels? && Config.development_pkg?(@package)
         debug("#{@package} is development, removing any --clean option")
         options.delete('-c')
       end
