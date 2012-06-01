@@ -15,14 +15,4 @@ Rake::RDocTask.new do |rd|
   rd.rdoc_files.include("README.md", "lib/**/*.rb")
 end
 
-namespace :rdoc do
-  desc "publish rdocs to my server"
-  task :publish => [:rdoc] do
-    pub = File.expand_path('~/Code/haskell/devsite/static/docs/ruby/raury')
-
-    FileUtils.rm_rf pub, :verbose => true
-    FileUtils.cp_r 'doc', pub, :verbose => true
-  end
-end
-
 task :default => :spec
