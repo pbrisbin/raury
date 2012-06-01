@@ -83,7 +83,7 @@ $ rake rdoc
 $ $BROWSER ./doc/index.html
 ~~~
 
-Also available [here](http://pbrisbin.com/static/docs/ruby/raury/).
+Also available [here](http://docs.pbrisbin.com/ruby/raury/).
 
 ## Viewing Coverage
 
