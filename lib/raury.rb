@@ -35,6 +35,8 @@ module Raury
           debug("#{Config.config.map {|k,v| "#{k}: #{v}"}.join("\n")}")
         end
 
+        raise InvalidUsage unless command
+
         if [:search, :info].include?(command)
           Search.new(*arguments).send(command)
         else
