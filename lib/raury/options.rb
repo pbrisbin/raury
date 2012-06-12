@@ -24,6 +24,7 @@ module Raury
           o.on(            '-e', '--extract',        'Stop after extracting')   { conf['sync_level'] = :extract  }
           o.on(            '-b', '--build',          'Stop after building')     { conf['sync_level'] = :build    }
           o.on(            '-y', '--install',        'Install after building')  { conf['sync_level'] = :install  }
+          o.on(            '-q', '--quiet',          'Print only names')        { conf['quiet'] = true           }
           o.separator ''
           o.on(                  '--build-dir DIR',  'Set build directory')     { |d| conf['build_directory'] = d            }
           o.on(                  '--ignore PKG',     'Ignore package')          { |p| conf['ignores'] << p                   }

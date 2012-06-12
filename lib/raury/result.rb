@@ -64,8 +64,14 @@ module Raury
       name <=> other.name
     end
 
-    # outputs results depending on type (search or info)
+    # outputs results depending on type (search or info) and whether
+    # we are being quiet
     def display
+      if Config.quiet?
+        puts "#{white name}"
+        return
+      end
+
       if type == :search
         puts "#{magenta 'aur'}/#{white name} #{green version}#{out_of_date ? red(' [out of date]') : ''}",
              "    #{description}"

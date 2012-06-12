@@ -62,6 +62,12 @@ describe Raury::Options do
 
     Raury::Options.parse! ["--no-edit"]
     Raury::Config.edit?('foo').should eq(false)
+
+    Raury::Options.parse! ["-q"]
+    Raury::Config.quiet?.should eq(true)
+
+    Raury::Options.parse! ["--quiet"]
+    Raury::Config.quiet?.should eq(true)
   end
 
   it "passes through short makepkg options" do

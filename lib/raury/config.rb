@@ -21,6 +21,7 @@ module Raury
                  'edit'       => :prompt,
                  'editor'     => ENV['EDITOR'] || 'vim',
                  'ignores'    => [],
+                 'quiet'      => false,
                  'resolve'    => false,
                  'source'     => true,
                  'sync_level' => :install,
@@ -30,7 +31,7 @@ module Raury
                  'makepkg_options'   => [] }
 
     # settings which should have query methods
-    BOOLEANS = ['confirm', 'debug', 'resolve', 'source', 'keep_devels']
+    BOOLEANS = ['confirm', 'debug', 'quiet', 'resolve', 'source', 'keep_devels']
 
     # settings which should be symbols
     SYMBOLS = ['color', 'edit', 'sync_level']
