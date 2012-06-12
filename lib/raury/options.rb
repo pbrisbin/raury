@@ -51,6 +51,8 @@ module Raury
 
         end.parse!(argv)
 
+        raise InvalidUsage unless command
+
         [command, argv]
 
       rescue OptionParser::InvalidOption
