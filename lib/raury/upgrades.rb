@@ -19,12 +19,14 @@ module Raury
         end
 
         if local_results.any?
+          debug("checking available versions of foreign packages")
+
           each_threaded(local_results) do |local_result|
-            debug("checking available version for #{local_result}")
             result = Rpc.new(:info, local_result.name).call rescue nil
 
+            debug("installed: #{local_result}, available: #{result || 'none'}")
             if result && result.newer?(local_result)
-              debug("upgrade available: #{local_result} => #{result}")
+              debug("adding to build plan: #{local_result} => #{result}")
               plan.results << result
             end
           end
