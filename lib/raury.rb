@@ -38,7 +38,7 @@ module Raury
         raise InvalidUsage unless command
 
         if [:search, :info].include?(command)
-          Search.new(*arguments).send(command)
+          Search.new(arguments).send(command)
         else
           Dir.chdir(Config.build_directory) do
             Plan.new(arguments).send(command)

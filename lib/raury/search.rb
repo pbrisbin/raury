@@ -3,7 +3,7 @@ module Raury
   class Search
     include Output
 
-    def initialize(*arguments)
+    def initialize(arguments)
       @arguments = arguments
     end
 

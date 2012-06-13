@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Raury::Search do
   it "executes search" do
-    s = Raury::Search.new('aur', 'helper')
+    s = Raury::Search.new(['aur', 'helper'])
 
     result = double("result")
     result.should_receive(:display)
@@ -16,7 +16,7 @@ describe Raury::Search do
   end
 
   it "exits on no search results" do
-    s = Raury::Search.new('aur', 'helper')
+    s = Raury::Search.new(['aur', 'helper'])
 
     rpc = double("rpc")
     rpc.should_receive(:call).and_raise(Raury::NoResults.new('aur'))
@@ -34,7 +34,7 @@ describe Raury::Search do
   end
 
   it "executes info" do
-    s = Raury::Search.new('aurget')
+    s = Raury::Search.new(['aurget'])
 
     result = double("result")
     result.should_receive(:display)
@@ -48,7 +48,7 @@ describe Raury::Search do
   end
 
   it "errors on no info results" do
-    s = Raury::Search.new('aurget')
+    s = Raury::Search.new(['aurget'])
 
     rpc = double("rpc")
     rpc.should_receive(:call).and_return([])
