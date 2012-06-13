@@ -55,13 +55,18 @@ module Raury
       @type, @hsh = type, hsh
     end
 
-    # results are compared by name
+    # for the most part, results are compared by name
     def ==(other)
       name == other.name
     end
 
     def <=>(other)
       name <=> other.name
+    end
+
+    # explicit comparison on version
+    def newer?(other)
+      Vercmp.new(version) > Vercmp.new(other.version)
     end
 
     # outputs results depending on type (search or info) and whether

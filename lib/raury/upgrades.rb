@@ -23,7 +23,7 @@ module Raury
             debug("checking available version for #{local_result}")
             result = Rpc.new(:info, local_result.name).call rescue nil
 
-            if result && Vercmp.new(result.version) > Vercmp.new(local_result.version)
+            if result && result.newer?(local_result)
               debug("upgrade available: #{local_result} => #{result}")
               plan.results << result
             end
