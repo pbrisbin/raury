@@ -20,14 +20,15 @@ module Raury
     # add a target to the plan, checks if we're configured to ingore it
     # first.
     def add_target(target)
-      unless targets.include?(target)
-        if !Config.ignore?(target) || prompt("#{target} is ignored. Process anyway")
-          debug("adding #{target} to build plan")
-          targets << target
-        else
-          warn("skipping #{target}...")
-        end
+      return if targets.include?(target)
+
+      if Config.ignore?(target) && !prompt("#{target} is ignored. Process anyway")
+        warn("skipping #{target}...")
+        return
       end
+
+      debug("adding #{target} to build plan")
+      targets << target
     end
 
     # add any dependencies for the current targets list as additional
