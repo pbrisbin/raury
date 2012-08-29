@@ -50,11 +50,11 @@ describe Raury::Depends do
   end
 
   it "resolves dependencies recursively" do
-    p = Raury::Plan.new.tap { |p| Raury::Depends.resolve('pkg', p) }
+    plan = Raury::Plan.new.tap { |p| Raury::Depends.resolve('pkg', p) }
 
-    # each level should be in the correct (reverse-install) order, but
-    # the order within the levels is non-deterministic.
-    targets = p.targets.uniq.reverse
+    # each level should be in the correct order, but the order within
+    # the levels is non-deterministic.
+    targets = plan.targets.uniq
 
     # so we'll validate that the motivating pkg is the last thing to be
     # installed and that all the other deps are there ahead of it.
@@ -65,8 +65,8 @@ describe Raury::Depends do
   it "resolves correctly for build_only" do
     Raury::Config.stub(:sync_level).and_return(:build)
 
-    p = Raury::Plan.new.tap { |p| Raury::Depends.resolve('pkg', p) }
+    plan = Raury::Plan.new.tap { |p| Raury::Depends.resolve('pkg', p) }
 
-    p.targets.uniq.sort.should eq(['pkg', 'mdep1'].sort)
+    plan.targets.uniq.sort.should eq(['pkg', 'mdep1'].sort)
   end
 end

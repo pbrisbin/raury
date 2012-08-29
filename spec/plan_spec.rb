@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Raury::Plan do
   before do
     Raury::Plan.any_instance.stub(:puts)
-    @it = Raury::Plan.new(['foo', 'bar'])
+    @it = Raury::Plan.new(['bar', 'foo'])
   end
 
   it "takes constructor args" do
@@ -14,7 +14,7 @@ describe Raury::Plan do
     @it.add_target('foo')
     @it.add_target('fab')
     @it.add_target('foo')
-    @it.targets.should eq(['foo','bar','fab'])
+    @it.targets.should eq(['fab', 'foo','bar'])
   end
 
   it "skips ignores" do

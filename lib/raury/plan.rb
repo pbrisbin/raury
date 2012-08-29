@@ -28,7 +28,7 @@ module Raury
       end
 
       debug("adding #{target} to build plan")
-      targets << target
+      targets.unshift(target) # add to front so deps go first
     end
 
     # add any dependencies for the current targets list as additional
@@ -53,11 +53,11 @@ module Raury
       puts 'searching the AUR...'
       results = Rpc.new(:multiinfo, *targets).call
 
-      # we need the results in the reverse order of our targets (so
-      # dependencies are installed first). unfortunately, the rpc
-      # returns results alphabetically. assumption is the reordering
-      # done here is cheaper than making per-target rpc calls.
-      targets.reverse.each do |target|
+      # we need the results in the order of our targets (so dependencies
+      # are installed first). unfortunately, the rpc returns results
+      # alphabetically. assumption is the reordering done here is
+      # cheaper than making per-target rpc calls.
+      targets.each do |target|
         if result = results.detect {|r| r.name == target}
           @results << result
         else
