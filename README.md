@@ -1,31 +1,25 @@
 # Raury
 
-Yet another simple aur helper. This one's in ruby.
+An aurget-like helper written in ruby.
 
 ## Why?
 
-~~~ 
-Recursively resolving the (83) dependencies for haskell-yesod:
+1. Easier to hack on (91% test coverage)
+2. Useful debug output (pretty colors!)
+3. It's very fast (compared to aurget at least)
 
-  2.70s user 3.27s system 160% cpu 3.710 total
-
-Checking for available upgrades to my (54) foreign packages:
-
-  0.61s user 0.08s system 38% cpu 1.787 total
+## Try it
 
 ~~~
-
-## Dependencies
-
-~~~ 
 $ gem install bundler
-$ bundle install
+$ bundle
+$ bundle exec bin/raury --help
 ~~~
 
-## Installation
+## Install it
 
-~~~ 
-$ rake install
+~~~
+$ curl https://github.com/pbrisbin/raury/blob/master/install.sh | bash
 ~~~
 
 ## Usage
@@ -70,13 +64,13 @@ These options can be passed to makepkg:
 
 ~~~
 
-## Running Specs
+## Specs
 
 ~~~ 
 $ rake
 ~~~
 
-## Viewing Docs
+## Docs
 
 ~~~ 
 $ rake rdoc
@@ -85,7 +79,7 @@ $ $BROWSER ./doc/index.html
 
 Also available [here](http://docs.pbrisbin.com/ruby/raury/).
 
-## Viewing Coverage
+## Coverage
 
 ~~~ 
 $ rake
