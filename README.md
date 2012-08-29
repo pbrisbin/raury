@@ -19,7 +19,7 @@ $ bundle exec bin/raury --help
 ## Install it
 
 ~~~
-$ curl https://github.com/pbrisbin/raury/blob/master/install.sh | bash
+$ curl https://github.com/pbrisbin/raury/raw/master/install.sh | bash
 ~~~
 
 ## Usage

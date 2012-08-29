@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #
-# curl https://github.com/pbrisbin/raury/blob/master/install.sh | bash
+# curl https://github.com/pbrisbin/raury/raw/master/install.sh | bash
 #
 # NOTE: this is only lightly tested. it shouldn't kill your cat but it
 # might not always work.
