@@ -1,13 +1,13 @@
 module Raury
   module Threads
+    # yield each element in the array in a separate thread. the return
+    # value is useless, this is done for the side effects.
     def each_threaded(arr, &block)
-      threads = []
+      arr.map do |i|
 
-      arr.each do |i|
-        threads << Thread.new { yield i }
-      end
+        Thread.new { yield i }
 
-      threads.map(&:join)
+      end.map(&:join)
     end
   end
 end
