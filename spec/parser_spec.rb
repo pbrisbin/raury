@@ -58,9 +58,11 @@ build() {
   end
 
   it "should respect build_only" do
+    Raury::Config.stub(:sync_level).and_return(:build)
+
     pkgbuild = build_pkgbuild('foo bar baz', 'bat biz qui')
 
-    deps = Raury::Parser.parse!(pkgbuild, true)
+    deps = Raury::Parser.parse!(pkgbuild)
     deps.should match_array(['bat', 'biz', 'qui'])
   end
 end

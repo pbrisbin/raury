@@ -10,7 +10,7 @@ module Raury
 
       # resolve for name and add additional targets to the build plan.
       def resolve(name, bp)
-        if deps = depends(name, Config.sync_level == :build)
+        if deps = depends(name)
           bp.add_target(name)
 
           if deps.any?
@@ -23,17 +23,12 @@ module Raury
 
       # retrieve the (make)depends for a package by either sourcing or
       # parsing its PKGBUILD depending on current configuration.
-      def depends(name, build_only = false)
+      def depends(name)
         return nil if checked?(name)
 
-        pkg = CGI::escape(name)
+        pkg      = CGI::escape(name)
         pkgbuild = Aur.new("/packages/#{pkg.slice(0,2)}/#{pkg}/PKGBUILD").fetch
-
-        deps = if Config.source?
-                 Parser.source!(pkgbuild, build_only)
-               else
-                 Parser.parse!(pkgbuild, build_only)
-               end
+        deps     = Parser.dependencies(pkgbuild)
 
         pacman_T deps
 
