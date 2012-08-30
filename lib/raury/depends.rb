@@ -28,7 +28,7 @@ module Raury
 
         pkg      = CGI::escape(name)
         pkgbuild = Aur.new("/packages/#{pkg.slice(0,2)}/#{pkg}/PKGBUILD").fetch
-        deps     = Parser.dependencies(pkgbuild)
+        deps     = Parser.new(pkgbuild).parse!
 
         pacman_T deps
 

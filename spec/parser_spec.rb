@@ -1,68 +1,60 @@
 require 'spec_helper'
 
 describe Raury::Parser do
-  def build_pkgbuild(deps_str, mdeps_str)
-    %{
-name=whatever
-version=whatever
-depends=( #{deps_str} )
-makedepends=( #{mdeps_str} )
+  def parser(deps_str, mdeps_str)
+    Raury::Parser.new(%{
+      name=whatever
+      version=whatever
+      depends=( #{deps_str} )
+      makedepends=( #{mdeps_str} )
 
-build() {
-  true
-}
-    }.strip
+      build() {
+        true
+      }
+    }.strip)
+  end
+
+  before do
+    Raury::Config.stub(:source?).and_return(false)
   end
 
   it "should parse a simple pkgbuild" do
-    pkgbuild = build_pkgbuild('foo bar baz', 'bat biz qui')
-
-    deps = Raury::Parser.parse!(pkgbuild)
+    deps = parser('foo bar baz', 'bat biz qui').parse!
     deps.should match_array(['foo', 'bar', 'baz', 'bat', 'biz', 'qui'])
   end
 
   it "should handle mixed quoting and spacing" do
-    pkgbuild = build_pkgbuild("foo 'bar'    baz", '  bat "biz" qui')
-
-    deps = Raury::Parser.parse!(pkgbuild)
+    deps = parser("foo 'bar'    baz", '  bat "biz" qui').parse!
     deps.should match_array(['foo', 'bar', 'baz', 'bat', 'biz', 'qui'])
   end
 
   it "should handle newlines" do
-    pkgbuild = build_pkgbuild("foo \n'bar' baz", "\n  " + 'bat "biz" qui')
-
-    deps = Raury::Parser.parse!(pkgbuild)
+    deps = parser("foo \n'bar' baz", "\n  " + 'bat "biz" qui').parse!
     deps.should match_array(['foo', 'bar', 'baz', 'bat', 'biz', 'qui'])
   end
 
   it "should handle comments" do
-    pkgbuild = build_pkgbuild("foo \n# a comment\n  'bar' # a comment\nbaz", "\n  " + 'bat "biz" qui')
-
-    deps = Raury::Parser.parse!(pkgbuild)
+    deps = parser("foo \n# a comment\n  'bar' # a comment\nbaz", "\n  " + 'bat "biz" qui').parse!
     deps.should match_array(['foo', 'bar', 'baz', 'bat', 'biz', 'qui'])
   end
 
   it "should handle empty/nonexistent" do
-    pkgbuild = %{
-name=whatever
-version=whatever
-makedepends=( )
+    deps = Raury::Parser.new(%{
+      name=whatever
+      version=whatever
+      makedepends=( )
 
-build() {
-  true
-}
-    }.strip
-
-    deps = Raury::Parser.parse!(pkgbuild)
+      build() {
+        true
+      }
+    }.strip).parse!
     deps.should be_empty
   end
 
   it "should respect build_only" do
     Raury::Config.stub(:sync_level).and_return(:build)
 
-    pkgbuild = build_pkgbuild('foo bar baz', 'bat biz qui')
-
-    deps = Raury::Parser.parse!(pkgbuild)
+    deps = parser('foo bar baz', 'bat biz qui').parse!
     deps.should match_array(['bat', 'biz', 'qui'])
   end
 end

@@ -1,79 +1,73 @@
 module Raury
   # Retrieves dependencies out of a given PKGBUILD.
   class Parser
-    class << self
-      # Source for dependencies or parse for them, depending on current
-      # configuration.
-      def dependencies(pkgbuild)
-        if Config.source?
-          Parser.source!(pkgbuild)
-        else
-          Parser.parse!(pkgbuild)
-        end
-      end
+    attr_reader :pkgbuild
 
-      # feed the pkgbuild through bash. obviously this comes with all
-      # the risks of sourcing an unviewed PKGBUILD. however, it's the
-      # only way to be 100% accurate.
-      def source!(pkgbuild)
-        # add a printf line to the script to output the (make)depends in
-        # a parsable away (one per line)
-        pkgbuild += "\n"
-        pkgbuild += 'printf "%s\n" "${makedepends[@]}" '
-        pkgbuild += '              "${depends[@]}"     '.strip unless build_only?
-        pkgbuild += "\n"
+    def initialize(pkgbuild)
+      @pkgbuild = pkgbuild
+    end
 
-        IO.popen('bash', 'r+') do |h|
-          h.write(pkgbuild)
-          h.close_write
-          h.read.split("\n")
-        end
-      end
+    # Unless we're allowing sourcing, try to parse the (make)depends
+    # using ruby. This is 100% safe and suprisingly accurate.
+    def parse!
+      # feeling risky?
+      return source! if Config.source?
 
-      # use ruby to parse the (make)depends from the PKGBUILD string.
-      # this is fairly accurately given well-formed PKGBUILDs and is
-      # almost (but not quite) as fast as sourcing directly. however,
-      # it's 100% safe to do.
-      def parse!(pkgbuild)
-        have_deps  = build_only?
-        have_mdeps = false
+      have_deps  = build_only?
+      have_mdeps = false
 
-        lines = pkgbuild.dup.split("\n")
+      lines = pkgbuild.dup.split("\n")
 
-        [].tap do |arr|
-          while line = lines.shift
-            if line =~ /makedepends=(.*)/
+      [].tap do |arr|
+        while line = lines.shift
+          if line =~ /makedepends=(.*)/
+            parse_bash_array!(arr, $1, lines)
+            have_mdeps = true
+
+            break if have_deps
+          elsif line =~ /(?!make)depends=(.*)/
+            unless build_only?
               parse_bash_array!(arr, $1, lines)
-              have_mdeps = true
+              have_deps = true
 
-              break if have_deps
-            elsif line =~ /(?!make)depends=(.*)/
-              unless build_only?
-                parse_bash_array!(arr, $1, lines)
-                have_deps = true
-
-                break if have_mdeps
-              end
+              break if have_mdeps
             end
           end
         end
       end
+    end
 
-      private
+    # Feed the PKGBUILD through bash. 100% accurate but dangerous. Also,
+    # if bash throws an exception we cannot catch it and we die.
+    def source!
+      return false unless Config.source?
 
-      def build_only?
-        Config.sync_level == :build
+      IO.popen('bash', 'r+') do |h|
+        h.puts(pkgbuild)
+
+        h.write('printf "%s\n" "${makedepends[@]}" ')
+        h.write('              "${depends[@]}"     '.strip) unless build_only?
+        h.puts
+
+        h.close_write
+        h.read.split("\n")
+      end
+    end
+
+    private
+
+    def build_only?
+      Config.sync_level == :build
+    end
+
+    def parse_bash_array!(arr, line, lines)
+      while !line.include?(')')
+        line += ' ' + lines.shift.sub(/#.*/, '')
       end
 
-      def parse_bash_array!(arr, line, lines)
-        while !line.include?(')')
-          line += ' ' + lines.shift.sub(/#.*/, '')
-        end
-
-        if line =~ /\((.*)\)/
-          $1.strip.split(' ').map do |elem|
-            arr << (elem =~ /('|")(.*)\1/ ? $2 : elem)
-          end
+      if line =~ /\((.*)\)/
+        $1.strip.split(' ').map do |elem|
+          arr << (elem =~ /('|")(.*)\1/ ? $2 : elem)
         end
       end
     end
