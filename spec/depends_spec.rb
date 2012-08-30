@@ -53,13 +53,13 @@ describe Raury::Depends do
     plan = Raury::Plan.new.tap { |p| Raury::Depends.resolve('pkg', p) }
 
     # each level should be in the correct order, but the order within
-    # the levels is non-deterministic.
-    targets = plan.targets.uniq
+    # the levels is non-deterministic. so we'll validate that the
+    # motivating pkg is the last thing to be installed and that all the
+    # other deps are there ahead of it.
+    pkg, *rest = plan.targets.reverse
 
-    # so we'll validate that the motivating pkg is the last thing to be
-    # installed and that all the other deps are there ahead of it.
-    targets.pop.should  eq('pkg')
-    targets.sort.should eq(['dep1', 'dep2', 'mdep1', 'mdep2'].sort)
+    pkg.should == 'pkg'
+    rest.should match_array(['dep1', 'dep2', 'mdep1', 'mdep2'])
   end
 
   it "resolves correctly for build_only" do
@@ -67,6 +67,6 @@ describe Raury::Depends do
 
     plan = Raury::Plan.new.tap { |p| Raury::Depends.resolve('pkg', p) }
 
-    plan.targets.uniq.sort.should eq(['pkg', 'mdep1'].sort)
+    plan.targets.should match_array(['pkg', 'mdep1'])
   end
 end
