@@ -13,7 +13,7 @@ describe Raury::Aur do
     Net::HTTP.should_receive(:new).with(Raury::Aur::AUR, 443).and_return(http)
 
     aur = Raury::Aur.new("/foo")
-    aur.fetch.should eq("foo")
+    aur.fetch.should == "foo"
   end
 
   it "raises network error when non-success" do

@@ -11,24 +11,24 @@ describe Raury::Options do
   it "handles common commands correctly" do
     command, arguments = Raury::Options.parse! %w[ -S aurget ]
     
-    command.should eq(:sync)
-    arguments.should eq(['aurget'])
+    command.should == :sync
+    arguments.should == ['aurget']
 
     command, arguments = Raury::Options.parse! %w[ -Syu ]
     
-    command.should eq(:upgrade)
+    command.should == :upgrade
     arguments.should be_empty
-    Raury::Config.sync_level.should eq(:install)
+    Raury::Config.sync_level.should == :install
 
     command, arguments = Raury::Options.parse! %w[ -Ss aur helper ]
     
-    command.should eq(:search)
-    arguments.should eq(['aur', 'helper'])
+    command.should == :search
+    arguments.should == ['aur', 'helper']
 
     command, arguments = Raury::Options.parse! %w[ -Ssi aurget ]
     
-    command.should eq(:info)
-    arguments.should eq(['aurget'])
+    command.should == :info
+    arguments.should == ['aurget']
   end
 
   it "handles options correctly" do
@@ -40,34 +40,34 @@ describe Raury::Options do
       [ '--ignore y',     :ignores,         ['y']     ]
     ].each do |flag, method, value|
       Raury::Options.parse! flag.split(' ')
-      Raury::Config.send(method).should eq(value)
+      Raury::Config.send(method).should == value
     end
 
     [:color, :confirm, :source].each do |opt|
       Raury::Options.parse! ["--#{opt}"]
-      Raury::Config.send("#{opt}?").should eq(true)
+      Raury::Config.send("#{opt}?").should  be_true
 
       Raury::Options.parse! ["--no-#{opt}"]
-      Raury::Config.send("#{opt}?").should eq(false)
+      Raury::Config.send("#{opt}?").should be_false
     end
 
     Raury::Options.parse! ["--deps"]
-    Raury::Config.resolve?.should eq(true)
+    Raury::Config.resolve?.should be_true
 
     Raury::Options.parse! ["--no-deps"]
-    Raury::Config.resolve?.should eq(false)
+    Raury::Config.resolve?.should be_false
 
     Raury::Options.parse! ["--edit"]
-    Raury::Config.edit?('foo').should eq(true)
+    Raury::Config.edit?('foo').should be_true
 
     Raury::Options.parse! ["--no-edit"]
-    Raury::Config.edit?('foo').should eq(false)
+    Raury::Config.edit?('foo').should be_false
 
     Raury::Options.parse! ["-q"]
-    Raury::Config.quiet?.should eq(true)
+    Raury::Config.quiet?.should be_true
 
     Raury::Options.parse! ["--quiet"]
-    Raury::Config.quiet?.should eq(true)
+    Raury::Config.quiet?.should be_true
   end
 
   it "passes through short makepkg options" do

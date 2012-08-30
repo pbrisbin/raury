@@ -7,14 +7,14 @@ describe Raury::Plan do
   end
 
   it "takes constructor args" do
-    @it.targets.should eq(['foo', 'bar'])
+    @it.targets.should == ['foo', 'bar']
   end
 
   it "won't duplicate" do
     @it.add_target('foo')
     @it.add_target('fab')
     @it.add_target('foo')
-    @it.targets.should eq(['fab', 'foo','bar'])
+    @it.targets.should == ['fab', 'foo','bar']
   end
 
   it "skips ignores" do

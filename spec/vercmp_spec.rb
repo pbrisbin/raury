@@ -54,7 +54,7 @@ describe Raury::Vercmp do
       a = Raury::Vercmp.new(v1)
       b = Raury::Vercmp.new(v2)
 
-      (a <=> b).should eql(expd)
+      (a <=> b).should == expd
     end
   end
 end

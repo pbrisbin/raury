@@ -37,13 +37,13 @@ describe Raury::Rpc, '#call' do
     rpc = Raury::Rpc.new(:search, 'foo')
     results = rpc.call
 
-    results.length.should eql(2)
+    results.length.should == 2
 
     result = results.first
 
     result.should be_kind_of(Raury::Result)
-    result.type.should eq(:search)
-    result.name.should eq('foo')
+    result.type.should == :search
+    result.name.should == 'foo'
   end
 
   it "returns one result for info" do
@@ -55,7 +55,7 @@ describe Raury::Rpc, '#call' do
     result = rpc.call
 
     result.should be_kind_of(Raury::Result)
-    result.type.should eq(:info)
-    result.name.should eq('foo')
+    result.type.should == :info
+    result.name.should == 'foo'
   end
 end
