@@ -64,13 +64,37 @@ These options can be passed to makepkg:
 
 ~~~
 
-## Specs
+## Configuration
+
+For default behavior, please see the `DEFAULTS` hash [here][defaults].
+
+[defaults]: https://github.com/pbrisbin/raury/blob/master/lib/raury/config.rb#L18
+
+Any of these values can be overridden via `$XDG_CONFIG_HOME/rauaryrc` 
+(or `$HOME/.rauryrc` if `$XDG_CONFIG_HOME` is not set)
+
+**Example**:
+
+~~~ { .yaml }
+# vim: ft=yaml:
+
+build_directory: ~/Sources
+resolve:         true
+source:          true
+edit:            never
+keep_devels:     true
+makepkg_options: ['-c', '-r']
+~~~
+
+## Development
+
+### Specs
 
 ~~~ 
 $ rake
 ~~~
 
-## Docs
+### Docs
 
 ~~~ 
 $ rake rdoc
@@ -78,10 +102,3 @@ $ $BROWSER ./doc/index.html
 ~~~
 
 Also available [here](http://docs.pbrisbin.com/ruby/raury/).
-
-## Coverage
-
-~~~ 
-$ rake
-$ $BROWSER ./coverage/index.html
-~~~
