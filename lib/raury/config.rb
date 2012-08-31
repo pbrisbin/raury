@@ -27,7 +27,7 @@ module Raury
                  'ignores'           => [],
                  'quiet'             => false,
                  'resolve'           => false,
-                 'source'            => true,
+                 'source'            => false,
                  'sync_level'        => :install,
                  'build_directory'   => ENV['HOME'],
                  'development_regex' => /-(git|hg|svn|darcs|cvs|bzr)$/,
