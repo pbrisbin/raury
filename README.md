@@ -68,7 +68,7 @@ These options can be passed to makepkg:
 
 For default behavior, please see the `DEFAULTS` hash [here][defaults].
 
-[defaults]: https://github.com/pbrisbin/raury/blob/master/lib/raury/config.rb#L18
+[defaults]: https://github.com/pbrisbin/raury/blob/master/lib/raury/config.rb#L22
 
 Any of these values can be overridden via `$XDG_CONFIG_HOME/rauaryrc` 
 (or `$HOME/.rauryrc` if `$XDG_CONFIG_HOME` is not set)
