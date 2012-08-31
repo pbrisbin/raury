@@ -12,19 +12,23 @@ module Raury
     end
 
     # user config file location
-    CONFIG_FILE = File.join(ENV['HOME'], '.rauryrc')
+    CONFIG_FILE = if ENV['XDG_CONFIG_HOME']
+                    File.join(ENV['XDG_CONFIG_HOME'], 'rauryrc')
+                  else
+                    File.join(ENV['HOME'], '.rauryrc')
+                  end
 
     # default behavior
-    DEFAULTS = { 'color'      => :auto,
-                 'confirm'    => true,
-                 'debug'      => false,
-                 'edit'       => :prompt,
-                 'editor'     => ENV['EDITOR'] || 'vim',
-                 'ignores'    => [],
-                 'quiet'      => false,
-                 'resolve'    => false,
-                 'source'     => true,
-                 'sync_level' => :install,
+    DEFAULTS = { 'color'             => :auto,
+                 'confirm'           => true,
+                 'debug'             => false,
+                 'edit'              => :prompt,
+                 'editor'            => ENV['EDITOR'] || 'vim',
+                 'ignores'           => [],
+                 'quiet'             => false,
+                 'resolve'           => false,
+                 'source'            => true,
+                 'sync_level'        => :install,
                  'build_directory'   => ENV['HOME'],
                  'development_regex' => /-(git|hg|svn|darcs|cvs|bzr)$/,
                  'keep_devels'       => false,
@@ -108,11 +112,8 @@ module Raury
     # when present.
     def config
       unless @config
-        if yaml = YAML::load(File.open(CONFIG_FILE)) rescue nil
-          @config = DEFAULTS.merge(yaml)
-        else
-          @config = DEFAULTS
-        end
+        yaml    = YAML::load(File.open(CONFIG_FILE)) rescue {}
+        @config = DEFAULTS.merge(yaml)
       end
 
       @config
