@@ -10,7 +10,7 @@ module Raury
     end
 
     def build
-      options = Config.makepkg_options
+      options = Config.makepkg_options.dup
 
       options << '--nocolor'   unless Config.color?
       options << '--noconfirm' unless Config.confirm?
