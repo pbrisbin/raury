@@ -58,8 +58,7 @@ describe Raury::Result do
       search_result_a.should == search_result_b
 
       # should sort by name
-      [search_result_c, search_result_a].sort.should eq(
-        [search_result_a, search_result_c])
+      [search_result_c, search_result_a].sort.should match_array([search_result_a, search_result_c])
     end
   end
 end

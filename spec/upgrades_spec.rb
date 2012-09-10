@@ -20,8 +20,8 @@ describe Raury::Upgrades do
     p = Raury::Plan.new(['baz'])
     Raury::Upgrades.add_to(p)
 
-    p.targets.should eq(['baz'])
-    p.results.map(&:name).should eq(['bar'])
+    p.targets.should == ['baz']
+    p.results.map(&:name).should == ['bar']
   end
 
   context "when there are development packages" do
@@ -48,7 +48,7 @@ describe Raury::Upgrades do
       p = Raury::Plan.new
       Raury::Upgrades.add_to(p)
 
-      p.results.map(&:name).should eq(['foo-git'])
+      p.results.map(&:name).should == ['foo-git']
     end
   end
 end
