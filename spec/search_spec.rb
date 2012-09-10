@@ -1,64 +1,66 @@
 require 'spec_helper'
 
-describe Raury::Search do
-  it "executes search" do
-    s = Raury::Search.new(['aur', 'helper'])
+module Raury
+  describe Search do
+    it "executes search" do
+      s = Search.new(['aur', 'helper'])
 
-    result = double("result")
-    result.should_receive(:display)
+      result = double("result")
+      result.should_receive(:display)
 
-    rpc = double("rpc")
-    rpc.should_receive(:call).and_return([result])
+      rpc = double("rpc")
+      rpc.should_receive(:call).and_return([result])
 
-    Raury::Rpc.should_receive(:new).with(:search, 'aur', 'helper').and_return(rpc)
+      Rpc.should_receive(:new).with(:search, 'aur', 'helper').and_return(rpc)
 
-    s.search
-  end
-
-  it "exits on no search results" do
-    s = Raury::Search.new(['aur', 'helper'])
-
-    rpc = double("rpc")
-    rpc.should_receive(:call).and_raise(Raury::NoResults.new('aur'))
-
-    Raury::Rpc.should_receive(:new).with(:search, 'aur', 'helper').and_return(rpc)
-
-    exited = false
-
-    begin s.search
-    rescue SystemExit
-      exited = true
+      s.search
     end
 
-    exited.should be_true
-  end
+    it "exits on no search results" do
+      s = Search.new(['aur', 'helper'])
 
-  it "executes info" do
-    s = Raury::Search.new(['aurget'])
+      rpc = double("rpc")
+      rpc.should_receive(:call).and_raise(NoResults.new('aur'))
 
-    result = double("result")
-    result.should_receive(:display)
+      Rpc.should_receive(:new).with(:search, 'aur', 'helper').and_return(rpc)
 
-    rpc = double("rpc")
-    rpc.should_receive(:call).and_return([result])
+      exited = false
 
-    Raury::Rpc.should_receive(:new).with(:multiinfo, 'aurget').and_return(rpc)
+      begin s.search
+      rescue SystemExit
+        exited = true
+      end
 
-    s.info
-  end
+      exited.should be_true
+    end
 
-  it "errors on no info results" do
-    s = Raury::Search.new(['aurget'])
+    it "executes info" do
+      s = Search.new(['aurget'])
 
-    rpc = double("rpc")
-    rpc.should_receive(:call).and_return([])
+      result = double("result")
+      result.should_receive(:display)
 
-    Raury::Rpc.should_receive(:new).with(:multiinfo, 'aurget').and_return(rpc)
+      rpc = double("rpc")
+      rpc.should_receive(:call).and_return([result])
 
-    begin
-      s.should_receive(:error)
+      Rpc.should_receive(:new).with(:multiinfo, 'aurget').and_return(rpc)
+
       s.info
-    rescue SystemExit
+    end
+
+    it "errors on no info results" do
+      s = Search.new(['aurget'])
+
+      rpc = double("rpc")
+      rpc.should_receive(:call).and_return([])
+
+      Rpc.should_receive(:new).with(:multiinfo, 'aurget').and_return(rpc)
+
+      begin
+        s.should_receive(:error)
+        s.info
+      rescue SystemExit
+      end
     end
   end
 end
