@@ -11,6 +11,8 @@ module Raury
         debug("checking available versions of foreign packages")
 
         each_threaded(pacman_Qm) do |name,version|
+          next if plan.targets.include?(name)
+
           if Config.development_pkg?(name)
             if Config.devs?
               if result = Rpc.new(:info, name).call rescue nil
