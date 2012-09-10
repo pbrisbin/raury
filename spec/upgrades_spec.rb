@@ -24,12 +24,31 @@ describe Raury::Upgrades do
     p.results.map(&:name).should eq(['bar'])
   end
 
-  it "ignores development packages" do
-    Raury::Upgrades.stub(:pacman_Qm).and_return([['foo-git','1.0']])
+  context "when there are development packages" do
+    before do
+      Raury::Upgrades.stub(:pacman_Qm).and_return([['foo-git','1.0']])
+    end
 
-    p = Raury::Plan.new
-    Raury::Upgrades.add_to(p)
+    it "ignores them" do
+      p = Raury::Plan.new
+      Raury::Upgrades.add_to(p)
 
-    p.results.should eq([])
+      p.results.should be_empty
+    end
+
+    it "includes them if we pass --devs" do
+      result = double("foo-rpc")
+      result.stub(:call).and_return( # even a lower version
+        Raury::Result.new(:info, {"Name" => 'foo-git', "Version" => '0.1'}))
+
+      Raury::Rpc.stub(:new).and_return(result)
+
+      Raury::Config.stub(:devs?).and_return(true)
+
+      p = Raury::Plan.new
+      Raury::Upgrades.add_to(p)
+
+      p.results.map(&:name).should eq(['foo-git'])
+    end
   end
 end

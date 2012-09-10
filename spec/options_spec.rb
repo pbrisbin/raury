@@ -43,7 +43,7 @@ describe Raury::Options do
       Raury::Config.send(method).should == value
     end
 
-    [:color, :confirm, :source].each do |opt|
+    [:color, :confirm, :devs, :source].each do |opt|
       Raury::Options.parse! ["--#{opt}"]
       Raury::Config.send("#{opt}?").should  be_true
 

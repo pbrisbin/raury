@@ -22,6 +22,7 @@ module Raury
     DEFAULTS = { 'color'             => :auto,
                  'confirm'           => true,
                  'debug'             => false,
+                 'devs'              => false,
                  'edit'              => :prompt,
                  'editor'            => ENV['EDITOR'] || 'vim',
                  'ignores'           => [],
@@ -35,10 +36,10 @@ module Raury
                  'makepkg_options'   => [] }
 
     # settings which should have query methods
-    BOOLEANS = ['confirm', 'debug', 'quiet', 'resolve', 'source', 'keep_devels']
+    BOOLEANS = %w[confirm debug devs quiet resolve source keep_devels]
 
     # settings which should be symbols
-    SYMBOLS = ['color', 'edit', 'sync_level']
+    SYMBOLS = %w[color edit sync_level]
 
     # actions which occur at given sync_levels
     LEVELS = { :download => [ :download                  ],

@@ -12,17 +12,25 @@ module Raury
 
         each_threaded(pacman_Qm) do |name,version|
           if Config.development_pkg?(name)
-            debug("ignoring #{name} due to development regex")
+            if Config.devs?
+              if result = Rpc.new(:info, name).call rescue nil
+                debug("adding to build plan: #{result} (dev package)")
+                plan.results << result
+              end
+            else
+              debug("ignoring: #{name} (dev package)")
+            end
+
             next
           end
 
-          local_result  = Result.new(:info, {"Name" => name, "Version" => version})
-          remote_result = Rpc.new(:info, name).call rescue nil
+          local  = Result.new(:info, {"Name" => name, "Version" => version})
+          remote = Rpc.new(:info, name).call rescue nil
 
-          debug("installed: #{local_result}, available: #{remote_result || 'none'}")
-          if remote_result && remote_result.newer?(local_result)
-            debug("adding to build plan: #{local_result} => #{remote_result}")
-            plan.results << remote_result # TODO: risk of duplicating targets?
+          debug("installed: #{local}, available: #{remote || 'none'}")
+          if remote && remote.newer?(local)
+            debug("adding to build plan: #{local} => #{remote}")
+            plan.results << remote # TODO: risk of duplicating targets?
           end
         end
       end
