@@ -4,27 +4,11 @@ module Raury
   describe Plan do
     before do
       Plan.any_instance.stub(:puts)
-      @it = Plan.new(['bar', 'foo'])
+      @it = Plan.new(['foo', 'bar'])
     end
 
     it "takes constructor args" do
       @it.targets.should == ['foo', 'bar']
-    end
-
-    it "won't duplicate" do
-      @it.add_target('foo')
-      @it.add_target('fab')
-      @it.add_target('foo')
-      @it.targets.should == ['fab', 'foo','bar']
-    end
-
-    it "skips ignores" do
-      Config.stub(:ignore?).and_return(true)
-
-      @it.stub(:prompt).and_return(false) # mimic user says no!
-      @it.should_receive(:warn) # warn about skipping
-
-      @it.add_target('something')
     end
 
     it "resolves dependencies" do

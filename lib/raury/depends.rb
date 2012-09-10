@@ -11,7 +11,9 @@ module Raury
       # resolve for name and add additional targets to the build plan.
       def resolve(name, bp)
         if deps = depends(name)
-          bp.add_target(name)
+          # add dependencies ahead of the motivating package so they get
+          # installed first.
+          bp.targets.unshift(name)
 
           if deps.any?
             each_threaded(deps - bp.targets) do |dep|

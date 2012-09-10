@@ -41,9 +41,7 @@ module Raury
           Search.new(arguments).send(command)
         else
           Dir.chdir(Config.build_directory) do
-            # reverse these args so they end up correct when added via
-            # unshift.
-            Plan.new(arguments.reverse).send(command)
+            Plan.new(arguments).send(command)
           end
         end
 

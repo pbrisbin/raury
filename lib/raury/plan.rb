@@ -10,25 +10,8 @@ module Raury
     attr_reader :targets, :results
 
     def initialize(ts = [])
-      @targets = []
+      @targets = ts
       @results = []
-
-      # go through add_target so we can check ignores
-      ts.each { |t| add_target(t) }
-    end
-
-    # add a target to the plan, checks if we're configured to ingore it
-    # first.
-    def add_target(target)
-      return if targets.include?(target)
-
-      if Config.ignore?(target) && !prompt("#{target} is ignored. Process anyway")
-        warn("skipping #{target}...")
-        return
-      end
-
-      debug("adding #{target} to build plan")
-      targets.unshift(target) # add to front so deps go first
     end
 
     # add any dependencies for the current targets list as additional
@@ -69,6 +52,8 @@ module Raury
     # prompt the user with the results that we'll process, when
     # confirmed, processes the results as per the current configuration.
     def run!
+      prune_ignored!
+
       if results.empty?
         # the only way we get here without having raised NoTargets is if
         # we're checking for upgrades and there were none.
@@ -115,6 +100,24 @@ module Raury
       Upgrades.add_to(self)
 
       run!
+    end
+
+    private
+
+    # to provide consistent behavior re: ignored packages between
+    # installs and upgrades, we check the final result set on its own
+    # just before presenting the list for confirmation.
+    def prune_ignored!
+      ignored = []
+
+      results.each do |result|
+        if Config.ignore?(result.name) && !prompt("#{result.name} is ignored. Process anyway")
+          warn("skipping #{result.name}...")
+          ignored << result
+        end
+      end
+
+      ignored.each { |i| results.delete(i) }
     end
   end
 end
