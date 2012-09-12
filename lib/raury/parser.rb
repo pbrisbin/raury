@@ -40,8 +40,6 @@ module Raury
     # Feed the PKGBUILD through bash. 100% accurate but dangerous. Also,
     # if bash throws an exception we cannot catch it and we die.
     def source!
-      return false unless Config.source?
-
       IO.popen('bash', 'r+') do |h|
         h.puts(pkgbuild)
 
