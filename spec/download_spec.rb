@@ -7,8 +7,9 @@ module Raury
 
       fh = double("fh")
       fh.should_receive(:write).with('some data')
+      fh.should_receive(:close)
 
-      File.should_receive(:open).with('url.tar.gz', 'w').and_yield(fh)
+      File.should_receive(:open).with('url.tar.gz', 'w').and_return(fh)
 
       result = double("result", :pkg_url => '/a/url.tar.gz')
       Download.new(result).download
@@ -19,9 +20,9 @@ module Raury
 
       h = double("h")
       h.should_receive(:write).with('some data')
-      h.should_receive(:close_write)
+      h.should_receive(:close)
 
-      IO.should_receive(:popen).with('tar fxz -', 'w').and_yield(h)
+      IO.should_receive(:popen).with('tar fxz -', 'w').and_return(h)
 
       result = double("result", :pkg_url => '/a/url')
       Download.new(result).extract

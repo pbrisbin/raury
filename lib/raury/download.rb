@@ -13,19 +13,22 @@ module Raury
       target = File.basename(@pkg_url)
 
       debug("downloading #{@pkg_url} => #{target}")
-      File.open(target, 'w') do |fh|
-        fh.write(@aur.fetch)
-      end
+      write_to(File.open(target, 'w'))
     end
 
     # downloads the taurball directly to tar, extracting it in the
     # current directory
     def extract
       debug("downloading #{@pkg_url} => tar fxz -")
-      IO.popen('tar fxz -', 'w') do |h|
-        h.write(@aur.fetch)
-        h.close_write
-      end
+      write_to(IO.popen('tar fxz -', 'w'))
+    end
+
+    private
+
+    def write_to(handle)
+      handle.write(@aur.fetch)
+    ensure
+      handle.close
     end
   end
 end

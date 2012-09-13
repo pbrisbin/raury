@@ -38,4 +38,19 @@ module Raury
       @responses ||= {}
     end
   end
+
+  class Config
+    attr_accessor :mutable
+
+    # by default config returns the same immutable defaults for all
+    # call. if we're in an #allow_mutable block, the values are
+    # persisted in an instance variable.
+    def config
+      if @mutable
+        @config ||= DEFAULTS.dup
+      else
+        DEFAULTS.dup
+      end
+    end
+  end
 end

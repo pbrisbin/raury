@@ -2,13 +2,6 @@ require 'spec_helper'
 
 module Raury
   describe Options do
-    before do
-      # ensure configs are rest to defaults between tests
-      Config.instance.instance_eval do
-        @config = Config::DEFAULTS.dup
-      end
-    end
-
     it "handles common commands correctly" do
       command, arguments = Options.parse! %w[ -S aurget ]
       
@@ -32,43 +25,55 @@ module Raury
       arguments.should == ['aurget']
     end
 
-    it "handles options correctly" do
-      [ [ '-d',             :sync_level,      :download ],
-        [ '-e',             :sync_level,      :extract  ],
-        [ '-b',             :sync_level,      :build    ],
-        [ '-y',             :sync_level,      :install  ],
-        [ '--build-dir /x', :build_directory, '/x'      ],
-        [ '--ignore y',     :ignores,         ['y']     ]
-      ].each do |flag, method, value|
-        Options.parse! flag.split(' ')
-        Config.send(method).should == value
+    # not really a test context, just needs a before/after to allow the
+    # config to be mutated during this spec only.
+    context do
+      before do
+        Config.mutable = true
       end
 
-      [:color, :confirm, :devs, :source].each do |opt|
-        Options.parse! ["--#{opt}"]
-        Config.send("#{opt}?").should  be_true
-
-        Options.parse! ["--no-#{opt}"]
-        Config.send("#{opt}?").should be_false
+      after do
+        Config.mutable = false
       end
 
-      Options.parse! ["--deps"]
-      Config.resolve?.should be_true
+      it "handles options correctly" do
+        [ [ '-d',             :sync_level,      :download ],
+          [ '-e',             :sync_level,      :extract  ],
+          [ '-b',             :sync_level,      :build    ],
+          [ '-y',             :sync_level,      :install  ],
+          [ '--build-dir /x', :build_directory, '/x'      ],
+          [ '--ignore y',     :ignores,         ['y']     ]
+        ].each do |flag, method, value|
+          Options.parse! flag.split(' ')
+          Config.send(method).should == value
+        end
 
-      Options.parse! ["--no-deps"]
-      Config.resolve?.should be_false
+        [:color, :confirm, :devs, :source].each do |opt|
+          Options.parse! ["--#{opt}"]
+          Config.send("#{opt}?").should  be_true
 
-      Options.parse! ["--edit"]
-      Config.edit?('foo').should be_true
+          Options.parse! ["--no-#{opt}"]
+          Config.send("#{opt}?").should be_false
+        end
 
-      Options.parse! ["--no-edit"]
-      Config.edit?('foo').should be_false
+        Options.parse! ["--deps"]
+        Config.resolve?.should be_true
 
-      Options.parse! ["-q"]
-      Config.quiet?.should be_true
+        Options.parse! ["--no-deps"]
+        Config.resolve?.should be_false
 
-      Options.parse! ["--quiet"]
-      Config.quiet?.should be_true
+        Options.parse! ["--edit"]
+        Config.edit?('foo').should be_true
+
+        Options.parse! ["--no-edit"]
+        Config.edit?('foo').should be_false
+
+        Options.parse! ["-q"]
+        Config.quiet?.should be_true
+
+        Options.parse! ["--quiet"]
+        Config.quiet?.should be_true
+      end
     end
 
     it "passes through short makepkg options" do

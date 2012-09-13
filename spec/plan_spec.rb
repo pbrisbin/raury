@@ -12,6 +12,8 @@ module Raury
     end
 
     it "resolves dependencies" do
+      Config.stub(:resolve?).and_return(true)
+
       @it = Plan.new(['foo'])
 
       Depends.should_receive(:resolve).with('foo', @it)

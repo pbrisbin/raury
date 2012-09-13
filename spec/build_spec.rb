@@ -6,8 +6,6 @@ module Raury
       Dir.stub(:chdir).and_yield
       File.stub(:exists?).and_return(true)
 
-      defs = Config::DEFAULTS.dup
-      Config.instance.stub(:config).and_return(defs)
       Config.stub(:edit?).and_return(false)
       Config.stub(:makepkg_options).and_return([])
     end
