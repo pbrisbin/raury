@@ -49,11 +49,7 @@ module Raury
 
     # delegate to our underlying hash of options
     def method_missing(meth, *args, &block)
-      if config && config.has_key?(meth.to_s)
-        config[meth.to_s]
-      else
-        super
-      end
+      config[meth.to_s]
     end
 
     BOOLEANS.each do |key|
