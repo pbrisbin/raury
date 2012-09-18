@@ -51,7 +51,7 @@ module Raury
 
   class EditError < PkgError
     def msg
-      'your editor returned non-zero. aborting.'
+      'your editor returned non-zero. aborting'
     end
   end
 
