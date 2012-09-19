@@ -68,7 +68,6 @@ module Raury
       b.should_receive(:system).with("#{Config.editor} 'PKGBUILD'").and_return(false)
 
       lambda { b.build }.should raise_error(EditError)
-
     end
   end
 end
