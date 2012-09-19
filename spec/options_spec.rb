@@ -2,25 +2,33 @@ require 'spec_helper'
 
 module Raury
   describe Options do
+    it "raises invalid usage on bad options" do
+      lambda {
+
+        Options.parse!(%w[ --foo -blam -o -blat ])
+
+      }.should raise_error(InvalidUsage)
+    end
+
     it "handles common commands correctly" do
       command, arguments = Options.parse! %w[ -S aurget ]
-      
+
       command.should == :sync
       arguments.should == ['aurget']
 
       command, arguments = Options.parse! %w[ -Syu ]
-      
+
       command.should == :upgrade
       arguments.should be_empty
       Config.sync_level.should == :install
 
       command, arguments = Options.parse! %w[ -Ss aur helper ]
-      
+
       command.should == :search
       arguments.should == ['aur', 'helper']
 
       command, arguments = Options.parse! %w[ -Ssi aurget ]
-      
+
       command.should == :info
       arguments.should == ['aurget']
     end
