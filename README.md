@@ -24,7 +24,7 @@ $ curl https://github.com/pbrisbin/raury/raw/master/install.sh | bash
 
 ## Usage
 
-~~~ 
+~~~
 usage: raury [command] [options] [arguments]
 
 Commands:
@@ -90,13 +90,13 @@ makepkg_options: ['-c', '-r']
 
 ### Specs
 
-~~~ 
+~~~
 $ rake
 ~~~
 
 ### Docs
 
-~~~ 
+~~~
 $ rake rdoc
 $ $BROWSER ./doc/index.html
 ~~~
