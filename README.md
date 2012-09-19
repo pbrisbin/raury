@@ -4,7 +4,7 @@ An aurget-like helper written in ruby.
 
 ## Why?
 
-1. Easier to hack on (91% test coverage)
+1. Easier to hack on (97% test coverage)
 2. Useful debug output (pretty colors!)
 3. It's very fast (compared to aurget at least)
 
