@@ -58,5 +58,25 @@ module Raury
       deps = parser('foo bar baz', 'bat biz qui').parse!
       deps.should match_array(['bat', 'biz', 'qui'])
     end
+
+    it "sources via bash" do
+      Config.stub(:source?).and_return(true)
+
+      handle = double('io-handle')
+
+      # we're going to dump the PKGBUILD into bash somehow and then try
+      # to read back the deps. by not being super specific we allow the
+      # implemention to change without having to fiddle with tests.
+      handle.stub(:puts)
+      handle.stub(:write)
+      handle.stub(:close_write)
+
+      # this is all that really matters.
+      handle.should_receive(:read).and_return("one\ntwo\n")
+      IO.should_receive(:popen).with('bash', 'r+').and_yield(handle)
+
+      deps = Parser.new(nil).parse!
+      deps.should == ['one', 'two']
+    end
   end
 end
