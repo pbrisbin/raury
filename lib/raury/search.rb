@@ -13,7 +13,7 @@ module Raury
       results.map(&:display)
 
     rescue NoResults
-      debug('not results found.')
+      debug('no results found.')
       exit 1
     end
 
