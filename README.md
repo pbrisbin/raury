@@ -22,6 +22,8 @@ $ bundle exec bin/raury --help
 $ curl https://github.com/pbrisbin/raury/raw/master/install.sh | bash
 ~~~
 
+Arch users can use the PKGBUILD.
+
 ## Usage
 
 ~~~
