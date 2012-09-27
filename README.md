@@ -40,12 +40,14 @@ Options:
     -e, --extract                    Stop after extracting
     -b, --build                      Stop after building
     -y, --install                    Install after building
+    -q, --quiet                      Print only names
 
         --build-dir DIR              Set build directory
         --ignore PKG                 Ignore package
         --[no-]color                 Colorize output
-        --[no-]confirm               Auto-answer prompts
+        --[no-]confirm               Require confirmation
         --[no-]deps                  Resolve dependencies
+        --[no-]devs                  Include development packages
         --[no-]edit                  Edit PKGBUILDs
         --[no-]source                Source for dependencies
 
