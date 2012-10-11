@@ -1,27 +1,24 @@
-# mixins
-require 'raury/output'
-require 'raury/pacman'
-require 'raury/prompt'
-require 'raury/threads'
-
-# classes
-require 'raury/aur'
-require 'raury/build'
-require 'raury/config'
-require 'raury/depends'
-require 'raury/download'
-require 'raury/exceptions'
-require 'raury/options'
-require 'raury/parser'
-require 'raury/plan'
-require 'raury/result'
-require 'raury/rpc'
-require 'raury/search'
-require 'raury/upgrades'
-require 'raury/vercmp'
-require 'raury/version'
-
 module Raury
+  autoload :Aur,         'raury/aur'
+  autoload :Build,       'raury/build'
+  autoload :Config,      'raury/config'
+  autoload :Depends,     'raury/depends'
+  autoload :Download,    'raury/download'
+  autoload :Exceptions,  'raury/exceptions'
+  autoload :Options,     'raury/options'
+  autoload :Output,      'raury/output'
+  autoload :Pacman,      'raury/pacman'
+  autoload :Parser,      'raury/parser'
+  autoload :Plan,        'raury/plan'
+  autoload :Prompt,      'raury/prompt'
+  autoload :Result,      'raury/result'
+  autoload :Rpc,         'raury/rpc'
+  autoload :Search,      'raury/search'
+  autoload :Threads,     'raury/threads'
+  autoload :Upgrades,    'raury/upgrades'
+  autoload :Vercmp,      'raury/vercmp'
+  autoload :Version,     'raury/version'
+
   class Main
     class << self
       include Output
