@@ -1,3 +1,5 @@
+require 'raury/exceptions'
+
 module Raury
   autoload :Aur,         'raury/aur'
   autoload :Build,       'raury/build'
