@@ -22,17 +22,17 @@ module Raury
       json = JSON.parse(@rpc.fetch)
       type = json['type']
 
-      if type == 'info'
-        return Result.new(:info, json['results'])
+      unless results?(json)
+        raise NoResults.new(@args.first)
       end
 
-      if ['search','multiinfo'].include?(type)
-        return json['results'].map do |result|
+      if type == 'info'
+        Result.new(type.to_sym, json['results'])
+      else
+        json['results'].map do |result|
           Result.new(type.to_sym, result)
         end
       end
-
-      raise NoResults.new(@args.first)
     end
 
     def to_arg(arg)
@@ -41,6 +41,17 @@ module Raury
 
     def to_args(args)
       args.map { |arg| "&arg[]=#{CGI::escape(arg)}" }.join
+    end
+
+    private
+
+    def results?(json)
+      count = json['resultcount']
+      count && count != 0 && valid_type?(json)
+    end
+
+    def valid_type?(json)
+      ['info', 'search', 'multiinfo'].include?(json['type'])
     end
   end
 end

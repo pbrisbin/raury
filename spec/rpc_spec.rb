@@ -23,15 +23,22 @@ module Raury
   end
 
   describe Rpc, '#call' do
-    it "handles no results" do
-      sample_json = '{"type":"error","results":"No results..."}'
+    it "handles no results based on type" do
+      sample_json = '{"type":"error","results":"Some error..."}'
+      Aur.any_instance.stub(:fetch).and_return(sample_json)
+
+      lambda { Rpc.new(:search, 'foo').call }.should raise_error(NoResults)
+    end
+
+    it "handles no results based on count" do
+      sample_json = '{"type":"search","resultcount":0,"results":[]}'
       Aur.any_instance.stub(:fetch).and_return(sample_json)
 
       lambda { Rpc.new(:search, 'foo').call }.should raise_error(NoResults)
     end
 
     it "builds results" do
-      sample_json = '{"type":"search","results":[{"Name":"foo"},{"Name":"bar"}]}'
+      sample_json = '{"type":"search","resultcount":2,"results":[{"Name":"foo"},{"Name":"bar"}]}'
 
       Aur.any_instance.stub(:fetch).and_return(sample_json)
 
@@ -48,7 +55,7 @@ module Raury
     end
 
     it "returns one result for info" do
-      sample_json = '{"type":"info","results":{"Name":"foo"}}'
+      sample_json = '{"type":"info","resultcount":1,"results":{"Name":"foo"}}'
 
       Aur.any_instance.stub(:fetch).and_return(sample_json)
 
