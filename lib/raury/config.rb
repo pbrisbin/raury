@@ -29,6 +29,7 @@ module Raury
                  'quiet'             => false,
                  'resolve'           => false,
                  'source'            => false,
+                 'threaded'          => true,
                  'sync_level'        => :install,
                  'build_directory'   => ENV['HOME'],
                  'development_regex' => /-(git|hg|svn|darcs|cvs|bzr)$/,
@@ -36,7 +37,7 @@ module Raury
                  'makepkg_options'   => [] }
 
     # settings which should have query methods
-    BOOLEANS = %w[confirm debug devs quiet resolve source keep_devels]
+    BOOLEANS = %w[confirm debug devs quiet resolve source keep_devels threaded]
 
     # settings which should be symbols
     SYMBOLS = %w[color edit sync_level]

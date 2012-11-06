@@ -56,7 +56,7 @@ module Raury
           Config.send(method).should == value
         end
 
-        [:color, :confirm, :devs, :source].each do |opt|
+        [:color, :confirm, :devs, :source, :threaded].each do |opt|
           Options.parse! ["--#{opt}"]
           Config.send("#{opt}?").should  be_true
 

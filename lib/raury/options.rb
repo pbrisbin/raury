@@ -26,14 +26,15 @@ module Raury
           o.on(            '-y', '--install',        'Install after building')       { conf['sync_level'] = :install  }
           o.on(            '-q', '--quiet',          'Print only names')             { conf['quiet'] = true           }
           o.separator ''
-          o.on(                  '--build-dir DIR',  'Set build directory')          { |d| conf['build_directory'] = d            }
-          o.on(                  '--ignore PKG',     'Ignore package')               { |p| conf['ignores'] << p                   }
-          o.on(                  '--[no-]color',     'Colorize output')              { |b| conf['color']   = b ? :always : :never }
-          o.on(                  '--[no-]confirm',   'Require confirmation')         { |b| conf['confirm'] = b                    }
-          o.on(                  '--[no-]deps',      'Resolve dependencies')         { |b| conf['resolve'] = b                    }
-          o.on(                  '--[no-]devs',      'Include development packages') { |b| conf['devs']    = b                    }
-          o.on(                  '--[no-]edit',      'Edit PKGBUILDs')               { |b| conf['edit']    = b ? :always : :never }
-          o.on(                  '--[no-]source',    'Source for dependencies')      { |b| conf['source']  = b                    }
+          o.on(                  '--build-dir DIR',  'Set build directory')          { |d| conf['build_directory'] = d             }
+          o.on(                  '--ignore PKG',     'Ignore package')               { |p| conf['ignores'] << p                    }
+          o.on(                  '--[no-]color',     'Colorize output')              { |b| conf['color']    = b ? :always : :never }
+          o.on(                  '--[no-]confirm',   'Require confirmation')         { |b| conf['confirm']  = b                    }
+          o.on(                  '--[no-]deps',      'Resolve dependencies')         { |b| conf['resolve']  = b                    }
+          o.on(                  '--[no-]devs',      'Include development packages') { |b| conf['devs']     = b                    }
+          o.on(                  '--[no-]edit',      'Edit PKGBUILDs')               { |b| conf['edit']     = b ? :always : :never }
+          o.on(                  '--[no-]source',    'Source for dependencies')      { |b| conf['source']   = b                    }
+          o.on(                  '--[no-]threaded',  'Be multi-threaded')            { |b| conf['threaded'] = b                    }
           o.separator ''
           o.on(                  '--version',        'Show version')                 { puts "raury #{VERSION}"; exit }
           o.on(                  '--debug',          'Show debug output')            { conf['debug'] = true }
