@@ -50,6 +50,7 @@ Options:
         --[no-]devs                  Include development packages
         --[no-]edit                  Edit PKGBUILDs
         --[no-]source                Source for dependencies
+        --[no-]threaded              Be multi-threaded
 
         --version                    Show version
         --debug                      Show debug output
