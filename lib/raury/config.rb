@@ -11,13 +11,6 @@ module Raury
       self.instance.send(meth, *args, &block)
     end
 
-    # user config file location
-    CONFIG_FILE = if ENV['XDG_CONFIG_HOME']
-                    File.join(ENV['XDG_CONFIG_HOME'], 'rauryrc')
-                  else
-                    File.join(ENV['HOME'], '.rauryrc')
-                  end
-
     # default behavior
     DEFAULTS = { 'color'             => :auto,
                  'confirm'           => true,
@@ -106,15 +99,28 @@ module Raury
       false
     end
 
+    private
+
     # lazy-load the defaults hash merged with your yaml configuration
     # when present.
     def config
-      unless @config
-        yaml    = YAML::load(File.open(CONFIG_FILE)) rescue {}
-        @config = DEFAULTS.merge(yaml)
-      end
+      @config ||= load_config
+    end
 
-      @config
+    def load_config
+      yaml = YAML::load(File.open(config_file)) rescue {}
+
+      DEFAULTS.merge(yaml)
+    end
+
+    def config_file
+      xdg = ENV.fetch('XDG_CONFIG_HOME') { File.join(ENV['HOME'], '.config') }
+
+      if File.exists?(xdg)
+        File.join(xdg, 'rauryrc')
+      else
+        File.join(ENV['HOME'], '.rauryrc')
+      end
     end
   end
 end
